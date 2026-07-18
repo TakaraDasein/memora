@@ -61,14 +61,14 @@ jobs:
       - name: Build
         run: scripts/build.sh ${{ inputs.version && format('--version {0}', inputs.version) || '' }} CC=${{ matrix.cc }} CXX=${{ matrix.cxx }}
       - name: Soak (${{ inputs.duration_minutes }} min)
-        run: scripts/soak-test.sh build/c/codebase-memory-mcp ${{ inputs.duration_minutes }}
+        run: scripts/soak-test.sh build/c/memora-mcp ${{ inputs.duration_minutes }}
       # #581 guard: read-only soak (never reindex/mutate) so any memory growth is
       # a query-path leak, not WAL/indexing. Reuses the build above.
       - name: Query-leak soak (#581, read-only)
         env:
           CBM_SOAK_MODE: query-leak
           RESULTS_DIR: soak-results-query-leak
-        run: scripts/soak-test.sh build/c/codebase-memory-mcp ${{ inputs.duration_minutes }} --skip-crash-test
+        run: scripts/soak-test.sh build/c/memora-mcp ${{ inputs.duration_minutes }} --skip-crash-test
       - name: Upload metrics
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -109,7 +109,7 @@ jobs:
       - name: Soak (${{ inputs.duration_minutes }} min)
         shell: msys2 {0}
         run: |
-          BIN=build/c/codebase-memory-mcp
+          BIN=build/c/memora-mcp
           [ -f "${BIN}.exe" ] && BIN="${BIN}.exe"
           scripts/soak-test.sh "$BIN" ${{ inputs.duration_minutes }}
       # #581 guard on Windows — the platform the bug is reported on.
@@ -119,7 +119,7 @@ jobs:
           CBM_SOAK_MODE: query-leak
           RESULTS_DIR: soak-results-query-leak
         run: |
-          BIN=build/c/codebase-memory-mcp
+          BIN=build/c/memora-mcp
           [ -f "${BIN}.exe" ] && BIN="${BIN}.exe"
           scripts/soak-test.sh "$BIN" ${{ inputs.duration_minutes }} --skip-crash-test
       - name: Upload metrics
@@ -161,7 +161,7 @@ jobs:
       - name: Soak (${{ inputs.duration_minutes }} min)
         shell: msys2 {0}
         run: |
-          BIN=build/c/codebase-memory-mcp
+          BIN=build/c/memora-mcp
           [ -f "${BIN}.exe" ] && BIN="${BIN}.exe"
           scripts/soak-test.sh "$BIN" ${{ inputs.duration_minutes }}
       # #581 guard on Windows — the platform the bug is reported on.
@@ -171,7 +171,7 @@ jobs:
           CBM_SOAK_MODE: query-leak
           RESULTS_DIR: soak-results-query-leak
         run: |
-          BIN=build/c/codebase-memory-mcp
+          BIN=build/c/memora-mcp
           [ -f "${BIN}.exe" ] && BIN="${BIN}.exe"
           scripts/soak-test.sh "$BIN" ${{ inputs.duration_minutes }} --skip-crash-test
       - name: Upload metrics
@@ -234,7 +234,7 @@ jobs:
       - name: ASan soak (15 min)
         env:
           ASAN_OPTIONS: "detect_leaks=1:halt_on_error=0:log_path=soak-results/asan"
-        run: scripts/soak-test.sh build/c/codebase-memory-mcp 15
+        run: scripts/soak-test.sh build/c/memora-mcp 15
       - name: Upload metrics
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -273,7 +273,7 @@ jobs:
         env:
           ASAN_OPTIONS: "detect_leaks=0:halt_on_error=0:log_path=soak-results/asan"
         run: |
-          BIN=build/c/codebase-memory-mcp
+          BIN=build/c/memora-mcp
           [ -f "${BIN}.exe" ] && BIN="${BIN}.exe"
           scripts/soak-test.sh "$BIN" 15
       - name: Upload metrics

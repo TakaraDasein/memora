@@ -149,7 +149,7 @@ TEST(artifact_import_rejects_size_mismatch) {
     ASSERT_EQ(cbm_artifact_export(g_db, g_repo, "test-proj", CBM_ARTIFACT_FAST), 0);
 
     char meta[1024];
-    snprintf(meta, sizeof(meta), "%s/.codebase-memory/artifact.json", g_repo);
+    snprintf(meta, sizeof(meta), "%s/.memora-mcp/artifact.json", g_repo);
     ASSERT_TRUE(
         bump_artifact_original_size(meta, 4096)); /* claim 4 KiB more than the frame holds */
 
@@ -172,13 +172,13 @@ TEST(artifact_export_fast_roundtrip) {
 
     /* Verify artifact files exist */
     char zst[1024];
-    snprintf(zst, sizeof(zst), "%s/.codebase-memory/graph.db.zst", g_repo);
+    snprintf(zst, sizeof(zst), "%s/.memora-mcp/graph.db.zst", g_repo);
     struct stat st;
     ASSERT_EQ(stat(zst, &st), 0);
     ASSERT_GT((int)st.st_size, 0);
 
     char meta[1024];
-    snprintf(meta, sizeof(meta), "%s/.codebase-memory/artifact.json", g_repo);
+    snprintf(meta, sizeof(meta), "%s/.memora-mcp/artifact.json", g_repo);
     ASSERT_EQ(stat(meta, &st), 0);
 
     /* Import to a new path */
@@ -267,7 +267,7 @@ TEST(artifact_schema_version_mismatch) {
 
     /* Overwrite artifact.json with incompatible schema version */
     char meta[1024];
-    snprintf(meta, sizeof(meta), "%s/.codebase-memory/artifact.json", g_repo);
+    snprintf(meta, sizeof(meta), "%s/.memora-mcp/artifact.json", g_repo);
     FILE *fp = fopen(meta, "w");
     ASSERT_NOT_NULL(fp);
     fprintf(fp, "{\"schema_version\": 999, \"original_size\": 1000}");
@@ -306,7 +306,7 @@ TEST(artifact_gitattributes_created) {
     cbm_artifact_export(g_db, g_repo, "test-proj", CBM_ARTIFACT_FAST);
 
     char ga[1024];
-    snprintf(ga, sizeof(ga), "%s/.codebase-memory/.gitattributes", g_repo);
+    snprintf(ga, sizeof(ga), "%s/.memora-mcp/.gitattributes", g_repo);
     struct stat st;
     ASSERT_EQ(stat(ga, &st), 0);
 
@@ -333,7 +333,7 @@ TEST(artifact_export_rename_failure_logs_specific_error) {
     create_test_db(g_db);
 
     char art_dir[1024];
-    snprintf(art_dir, sizeof(art_dir), "%s/.codebase-memory", g_repo);
+    snprintf(art_dir, sizeof(art_dir), "%s/.memora-mcp", g_repo);
     cbm_mkdir_p(art_dir, 0755);
 
     char zst[1024];
@@ -365,7 +365,7 @@ TEST(pipeline_persistence_export_failure_returns_error) {
     write_text_file(src, "int main(void) { return 0; }\n");
 
     char art_dir[1024];
-    snprintf(art_dir, sizeof(art_dir), "%s/.codebase-memory", g_repo);
+    snprintf(art_dir, sizeof(art_dir), "%s/.memora-mcp", g_repo);
     cbm_mkdir_p(art_dir, 0755);
 
     char zst[1024];

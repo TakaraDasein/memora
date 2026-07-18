@@ -1,4 +1,4 @@
-// codebase-memory-mcp — Go installer wrapper.
+// memora-mcp — Go installer wrapper.
 //
 // On first run, downloads the pre-built binary for the current platform from
 // GitHub Releases, caches it, and replaces the current process with it.
@@ -6,7 +6,7 @@
 //
 // Install:
 //
-//	go install github.com/DeusData/codebase-memory-mcp/pkg/go/cmd/codebase-memory-mcp@latest
+//	go install github.com/TakaraDasein/memora/pkg/go/cmd/memora-mcp@latest
 package main
 
 import (
@@ -27,18 +27,18 @@ import (
 )
 
 const (
-	repo    = "DeusData/codebase-memory-mcp"
+	repo    = "TakaraDasein/memora"
 	version = "0.8.1"
 )
 
 func main() {
 	bin, err := ensureBinary()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "codebase-memory-mcp: %v\n", err)
+		fmt.Fprintf(os.Stderr, "memora-mcp: %v\n", err)
 		os.Exit(1)
 	}
 	if err := execBinary(bin, os.Args[1:]); err != nil {
-		fmt.Fprintf(os.Stderr, "codebase-memory-mcp: %v\n", err)
+		fmt.Fprintf(os.Stderr, "memora-mcp: %v\n", err)
 		os.Exit(1)
 	}
 }
@@ -55,7 +55,7 @@ func ensureBinary() (string, error) {
 }
 
 func binPath() string {
-	name := "codebase-memory-mcp"
+	name := "memora-mcp"
 	if runtime.GOOS == "windows" {
 		name += ".exe"
 	}
@@ -69,20 +69,20 @@ func cacheDir() string {
 	switch runtime.GOOS {
 	case "windows":
 		if d := os.Getenv("LOCALAPPDATA"); d != "" {
-			return filepath.Join(d, "codebase-memory-mcp")
+			return filepath.Join(d, "memora-mcp")
 		}
 	case "darwin":
 		if home, err := os.UserHomeDir(); err == nil {
-			return filepath.Join(home, "Library", "Caches", "codebase-memory-mcp")
+			return filepath.Join(home, "Library", "Caches", "memora-mcp")
 		}
 	}
 	if d := os.Getenv("XDG_CACHE_HOME"); d != "" {
-		return filepath.Join(d, "codebase-memory-mcp")
+		return filepath.Join(d, "memora-mcp")
 	}
 	if home, err := os.UserHomeDir(); err == nil {
-		return filepath.Join(home, ".cache", "codebase-memory-mcp")
+		return filepath.Join(home, ".cache", "memora-mcp")
 	}
-	return filepath.Join(os.TempDir(), "codebase-memory-mcp")
+	return filepath.Join(os.TempDir(), "memora-mcp")
 }
 
 func goos() string {
@@ -117,11 +117,11 @@ func download(dest string) error {
 		ext = "zip"
 	}
 
-	archive := fmt.Sprintf("codebase-memory-mcp-%s-%s.%s", platform, arch, ext)
+	archive := fmt.Sprintf("memora-mcp-%s-%s.%s", platform, arch, ext)
 	url := fmt.Sprintf("https://github.com/%s/releases/download/v%s/%s", repo, version, archive)
 	checksumURL := fmt.Sprintf("https://github.com/%s/releases/download/v%s/checksums.txt", repo, version)
 
-	fmt.Fprintf(os.Stderr, "codebase-memory-mcp: downloading v%s for %s/%s...\n", version, platform, arch)
+	fmt.Fprintf(os.Stderr, "memora-mcp: downloading v%s for %s/%s...\n", version, platform, arch)
 
 	tmp, err := os.MkdirTemp("", "cbm-install-*")
 	if err != nil {
@@ -143,7 +143,7 @@ func download(dest string) error {
 		}
 	}
 
-	binName := "codebase-memory-mcp"
+	binName := "memora-mcp"
 	if platform == "windows" {
 		binName += ".exe"
 	}

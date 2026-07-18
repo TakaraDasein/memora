@@ -1,15 +1,15 @@
 # Configuration Reference
 
-This page documents the configuration files that `codebase-memory-mcp` reads or writes today.
+This page documents the configuration files that `memora-mcp` reads or writes today.
 
 ## At a Glance
 
 | Purpose | Path | Format | Notes |
 |---|---|---|---|
-| Global custom extension mapping | `$XDG_CONFIG_HOME/codebase-memory-mcp/config.json` | JSON | Falls back to `~/.config/codebase-memory-mcp/config.json` when `XDG_CONFIG_HOME` is unset. |
+| Global custom extension mapping | `$XDG_CONFIG_HOME/memora-mcp/config.json` | JSON | Falls back to `~/.config/memora-mcp/config.json` when `XDG_CONFIG_HOME` is unset. |
 | Per-project custom extension mapping | `{repo_root}/.codebase-memory.json` | JSON | Overrides conflicting global `extra_extensions` entries. |
-| CLI-managed runtime settings | `${CBM_CACHE_DIR:-~/.cache/codebase-memory-mcp}/_config.db` | SQLite | Written by `codebase-memory-mcp config set/reset`. |
-| UI settings | `${CBM_CACHE_DIR:-~/.cache/codebase-memory-mcp}/config.json` | JSON | Stores `ui_enabled` and `ui_port`. |
+| CLI-managed runtime settings | `${CBM_CACHE_DIR:-~/.cache/memora-mcp}/_config.db` | SQLite | Written by `memora-mcp config set/reset`. |
+| UI settings | `${CBM_CACHE_DIR:-~/.cache/memora-mcp}/config.json` | JSON | Stores `ui_enabled` and `ui_port`. |
 
 ## 1. Custom File Extension Mapping
 
@@ -20,13 +20,13 @@ Two optional JSON files let you map additional file extensions to built-in langu
 Default path:
 
 ```text
-$XDG_CONFIG_HOME/codebase-memory-mcp/config.json
+$XDG_CONFIG_HOME/memora-mcp/config.json
 ```
 
 Fallback when `XDG_CONFIG_HOME` is unset:
 
 ```text
-~/.config/codebase-memory-mcp/config.json
+~/.config/memora-mcp/config.json
 ```
 
 ### Per-project config
@@ -62,17 +62,17 @@ Notes:
 The `config` subcommand stores runtime settings in a small SQLite database:
 
 ```text
-${CBM_CACHE_DIR:-~/.cache/codebase-memory-mcp}/_config.db
+${CBM_CACHE_DIR:-~/.cache/memora-mcp}/_config.db
 ```
 
 Inspect or change values with the CLI:
 
 ```bash
-codebase-memory-mcp config list
-codebase-memory-mcp config get auto_index
-codebase-memory-mcp config set auto_index true
-codebase-memory-mcp config set auto_index_limit 50000
-codebase-memory-mcp config reset auto_index
+memora-mcp config list
+memora-mcp config get auto_index
+memora-mcp config set auto_index true
+memora-mcp config set auto_index_limit 50000
+memora-mcp config reset auto_index
 ```
 
 Current keys:
@@ -87,7 +87,7 @@ Current keys:
 The optional built-in graph UI stores its settings in:
 
 ```text
-${CBM_CACHE_DIR:-~/.cache/codebase-memory-mcp}/config.json
+${CBM_CACHE_DIR:-~/.cache/memora-mcp}/config.json
 ```
 
 Current format:
@@ -111,7 +111,7 @@ These environment variables affect runtime behavior:
 | Variable | Default | Description |
 |---|---|---|
 | `CBM_ALLOWED_ROOT` | *(unset)* | Restrict `index_repository` to paths within this directory. When set, a `repo_path` that resolves (after symlink / `..` resolution) outside this root is refused; unset imposes no restriction. Useful when the server may be driven by an untrusted caller (agentic or multi-tenant deployments). |
-| `CBM_CACHE_DIR` | `~/.cache/codebase-memory-mcp` | Override the cache directory used for indexes, `_config.db`, and UI `config.json`. |
+| `CBM_CACHE_DIR` | `~/.cache/memora-mcp` | Override the cache directory used for indexes, `_config.db`, and UI `config.json`. |
 | `CBM_DIAGNOSTICS` | `false` | Enable periodic diagnostics output to `/tmp/cbm-diagnostics-<pid>.json`. |
 | `CBM_DOWNLOAD_URL` | GitHub releases | Override the update download URL. |
 | `CBM_LOG_LEVEL` | `info` | Set stderr log level to `debug`, `info`, `warn`, `error`, or `none` (or `0`-`4`). |
@@ -124,7 +124,7 @@ The `install` command can also write MCP entries and instruction blocks into age
 Those target paths vary by tool and platform, so the easiest way to inspect the exact files for your machine is:
 
 ```bash
-codebase-memory-mcp install --dry-run
+memora-mcp install --dry-run
 ```
 
 That prints the specific config files the installer would modify without writing anything.

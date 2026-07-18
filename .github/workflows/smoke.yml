@@ -59,7 +59,7 @@ jobs:
       - name: Smoke invariants
         run: |
           chmod +x scripts/smoke-invariants.sh
-          scripts/smoke-invariants.sh build/c/codebase-memory-mcp
+          scripts/smoke-invariants.sh build/c/memora-mcp
 
   # ── Windows x64: 2022 + 2025 (msys2 CLANG64) ──────────────────────────────
   smoke-windows-x64:
@@ -89,7 +89,7 @@ jobs:
         shell: msys2 {0}
         run: |
           chmod +x scripts/smoke-invariants.sh
-          BIN=build/c/codebase-memory-mcp
+          BIN=build/c/memora-mcp
           [ -f "${BIN}.exe" ] && BIN="${BIN}.exe"
           scripts/smoke-invariants.sh "$BIN"
 
@@ -119,6 +119,6 @@ jobs:
         shell: msys2 {0}
         run: |
           chmod +x scripts/smoke-invariants.sh
-          BIN=build/c/codebase-memory-mcp
+          BIN=build/c/memora-mcp
           [ -f "${BIN}.exe" ] && BIN="${BIN}.exe"
           scripts/smoke-invariants.sh "$BIN"

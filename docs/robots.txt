@@ -1,4 +1,4 @@
-# codebase-memory-mcp — all crawlers welcome, including AI answer engines.
+# memora-mcp — all crawlers welcome, including AI answer engines.
 User-agent: *
 Allow: /
 
@@ -30,4 +30,4 @@ Allow: /
 User-agent: Bingbot
 Allow: /
 
-Sitemap: https://deusdata.github.io/codebase-memory-mcp/sitemap.xml
+Sitemap: https://takaradasein.github.io/memora-mcp/sitemap.xml

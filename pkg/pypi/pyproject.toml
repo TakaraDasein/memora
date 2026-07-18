@@ -3,9 +3,9 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "codebase-memory-mcp"
+name = "memora-mcp"
 version = "0.8.1"
-description = "Fast code intelligence engine for AI coding agents — single static binary MCP server"
+description = "Memora MCP — fork of codebase-memory-mcp, code intelligence engine for AI coding agents"
 readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.8"
@@ -24,12 +24,12 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/DeusData/codebase-memory-mcp"
-Repository = "https://github.com/DeusData/codebase-memory-mcp"
-Issues = "https://github.com/DeusData/codebase-memory-mcp/issues"
+Homepage = "https://github.com/TakaraDasein/memora"
+Repository = "https://github.com/TakaraDasein/memora"
+Issues = "https://github.com/TakaraDasein/memora/issues"
 
 [project.scripts]
-codebase-memory-mcp = "codebase_memory_mcp:main"
+memora-mcp = "memora_mcp:main"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/codebase_memory_mcp"]
+packages = ["src/memora_mcp"]

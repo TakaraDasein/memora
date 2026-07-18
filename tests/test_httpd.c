@@ -348,7 +348,7 @@ TEST(httpd_resolves_bare_binary_path_from_path) {
     ASSERT_NOT_NULL(td);
 
     char exe[512];
-    snprintf(exe, sizeof(exe), "%s/codebase-memory-mcp", td);
+    snprintf(exe, sizeof(exe), "%s/memora-mcp", td);
     FILE *f = fopen(exe, "w");
     ASSERT_NOT_NULL(f);
     fputs("#!/bin/sh\nexit 0\n", f);
@@ -360,7 +360,7 @@ TEST(httpd_resolves_bare_binary_path_from_path) {
 
     char resolved[1024];
     ASSERT_TRUE(
-        cbm_http_server_resolve_binary_path("codebase-memory-mcp", resolved, sizeof(resolved)));
+        cbm_http_server_resolve_binary_path("memora-mcp", resolved, sizeof(resolved)));
     ASSERT_STR_EQ(resolved, exe);
 
     if (old_path) {

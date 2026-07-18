@@ -2382,8 +2382,8 @@ static int toml_legacy_command_is_owned(const char *data, const toml_assignment_
             basename_start = i + 1U;
         }
     }
-    static const char binary_name[] = "codebase-memory-mcp";
-    static const char windows_binary_name[] = "codebase-memory-mcp.exe";
+    static const char binary_name[] = "memora-mcp";
+    static const char windows_binary_name[] = "memora-mcp.exe";
     size_t basename_len = value.len - basename_start;
     *owned = (basename_len == sizeof(binary_name) - 1U &&
               memcmp(value.data + basename_start, binary_name, basename_len) == 0) ||

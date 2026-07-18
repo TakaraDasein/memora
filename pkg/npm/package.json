@@ -1,16 +1,16 @@
 {
-  "name": "codebase-memory-mcp",
+  "name": "memora-mcp",
   "version": "0.8.1",
   "description": "Fast code intelligence engine for AI coding agents — single static binary MCP server",
-  "mcpName": "io.github.DeusData/codebase-memory-mcp",
+  "mcpName": "com.takaradasein/memora-mcp",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/DeusData/codebase-memory-mcp.git"
+    "url": "git+https://github.com/TakaraDasein/memora.git"
   },
-  "homepage": "https://github.com/DeusData/codebase-memory-mcp",
+  "homepage": "https://github.com/TakaraDasein/memora",
   "bugs": {
-    "url": "https://github.com/DeusData/codebase-memory-mcp/issues"
+    "url": "https://github.com/TakaraDasein/memora/issues"
   },
   "keywords": [
     "mcp",
@@ -23,7 +23,7 @@
     "tree-sitter"
   ],
   "bin": {
-    "codebase-memory-mcp": "./bin.js"
+    "memora-mcp": "./bin.js"
   },
   "scripts": {
     "postinstall": "node install.js"

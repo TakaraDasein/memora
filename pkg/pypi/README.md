@@ -1,24 +1,24 @@
-# codebase-memory-mcp
+# memora-mcp
 
-mcp-name: io.github.DeusData/codebase-memory-mcp
+mcp-name: com.takaradasein/memora-mcp
 
 **Fast code intelligence engine for AI coding agents.** Indexes an average repository in milliseconds, the Linux kernel (28M LOC) in 3 minutes. Answers structural queries in under 1ms.
 
-This package installs the `codebase-memory-mcp` binary from [GitHub Releases](https://github.com/DeusData/codebase-memory-mcp/releases). The binary is downloaded on first run and cached in your OS cache directory.
+This package installs the `memora-mcp` binary from [GitHub Releases](https://github.com/TakaraDasein/memora/releases). The binary is downloaded on first run and cached in your OS cache directory.
 
 ## Installation
 
 ```bash
-pip install codebase-memory-mcp
+pip install memora-mcp
 # or
-pipx install codebase-memory-mcp
+pipx install memora-mcp
 ```
 
 ## Usage
 
 ```bash
-codebase-memory-mcp install   # configure your coding agents
-codebase-memory-mcp --help
+memora-mcp install   # configure your coding agents
+memora-mcp --help
 ```
 
 ## Supported platforms
@@ -31,4 +31,4 @@ codebase-memory-mcp --help
 
 ## Full documentation
 
-See [github.com/DeusData/codebase-memory-mcp](https://github.com/DeusData/codebase-memory-mcp)
+See [github.com/TakaraDasein/memora](https://github.com/TakaraDasein/memora)

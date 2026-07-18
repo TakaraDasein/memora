@@ -11,7 +11,7 @@
     {
       packages = forAllSystems (pkgs: {
         default = pkgs.stdenv.mkDerivation {
-          pname = "memora";
+          pname = "memora-mcp";
           version = "0.6.0";
 
           src = ./.;
@@ -28,14 +28,14 @@
           '';
 
           installPhase = ''
-            install -Dm755 build/c/codebase-memory-mcp $out/bin/memora
+            install -Dm755 build/c/memora-mcp $out/bin/memora-mcp
           '';
 
           meta = {
             description = "Servidor MCP experimental para indexación semántica de código con grafos de conocimiento";
             homepage = "https://github.com/TakaraDasein/memora";
             license = nixpkgs.lib.licenses.mit;
-            mainProgram = "memora";
+            mainProgram = "memora-mcp";
             platforms = systems;
           };
         };

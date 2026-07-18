@@ -174,4 +174,4 @@ jobs:
         # CBM_INDEX_SUPERVISOR=0 for determinism, but the non-ASCII CLI guard drops that
         # override so it exercises the real supervisor->worker spawn (where #423/#20's
         # second half lives); the other guards test path/hook/drive fixes in-process.
-        run: ./scripts/test-windows.ps1 -GuardsOnly -Binary build/c/codebase-memory-mcp.exe
+        run: ./scripts/test-windows.ps1 -GuardsOnly -Binary build/c/memora-mcp.exe

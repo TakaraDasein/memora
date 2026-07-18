@@ -1,0 +1,30 @@
+{
+  "version": "0.8.1",
+  "description": "Fast code intelligence engine for AI coding agents — single static binary MCP server",
+  "homepage": "https://github.com/TakaraDasein/memora",
+  "license": "MIT",
+  "architecture": {
+    "64bit": {
+      "url": "https://github.com/TakaraDasein/memora/releases/download/v0.8.1/memora-mcp-windows-amd64.zip",
+      "hash": "a602ad090ed3f49d86c55472f73f27ad7055222806a82358f2e08513e027f00f",
+      "bin": "memora-mcp.exe"
+    }
+  },
+  "post_install": [
+    "& \"$dir\\memora-mcp.exe\" install -y 2>&1 | Out-Null"
+  ],
+  "checkver": {
+    "github": "https://github.com/TakaraDasein/memora"
+  },
+  "autoupdate": {
+    "architecture": {
+      "64bit": {
+        "url": "https://github.com/TakaraDasein/memora/releases/download/v$version/memora-mcp-windows-amd64.zip",
+        "hash": {
+          "url": "https://github.com/TakaraDasein/memora/releases/download/v$version/checksums.txt",
+          "find": "([a-f0-9]{64})\\s+memora-mcp-windows-amd64\\.zip"
+        }
+      }
+    }
+  }
+}

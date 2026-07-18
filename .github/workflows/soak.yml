@@ -82,7 +82,7 @@ jobs:
           # (240 min / query-leak) so a qa/soak-** push runs the real #581 soak.
           CBM_SOAK_MODE: ${{ inputs.mode || 'query-leak' }}
           DURATION_MINUTES: ${{ inputs.duration_minutes || '240' }}
-        run: scripts/soak-test.sh build/c/codebase-memory-mcp "${DURATION_MINUTES}"
+        run: scripts/soak-test.sh build/c/memora-mcp "${DURATION_MINUTES}"
 
       - name: Upload metrics
         if: always()
@@ -118,7 +118,7 @@ jobs:
           CBM_SOAK_MODE: ${{ inputs.mode || 'query-leak' }}
           DURATION_MINUTES: ${{ inputs.duration_minutes || '240' }}
         run: |
-          BIN=build/c/codebase-memory-mcp
+          BIN=build/c/memora-mcp
           [ -f "${BIN}.exe" ] && BIN="${BIN}.exe"
           scripts/soak-test.sh "$BIN" "${DURATION_MINUTES}"
       - name: Upload metrics

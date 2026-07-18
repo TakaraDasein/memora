@@ -3,7 +3,7 @@
 This document defines how maintainer responsibility, review routing, and
 operational authority work in this project.
 
-codebase-memory-mcp is currently a user-owned repository. Because GitHub teams
+memora-mcp is currently a user-owned repository. Because GitHub teams
 are not available here, all delegated ownership is expressed with individual
 GitHub handles.
 

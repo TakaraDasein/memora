@@ -1,11 +1,11 @@
 <#
 .SYNOPSIS
-    Run the native-Windows product-surface test suite for codebase-memory-mcp.
+    Run the native-Windows product-surface test suite for memora-mcp.
 
 .DESCRIPTION
-    Builds the product binary (build/c/codebase-memory-mcp.exe) if it is not
+    Builds the product binary (build/c/memora-mcp.exe) if it is not
     already present, then runs the deterministic Windows integration tests under
-    tests/windows/ against a real codebase-memory-mcp.exe (real stdio / CLI /
+    tests/windows/ against a real memora-mcp.exe (real stdio / CLI /
     HTTP UI, real SQLite DB).
 
     Two categories of test:
@@ -37,7 +37,7 @@
     AddressSanitizer/UBSan (Linux containers, WSL), prefer scripts/test.sh.
 
 .PARAMETER Binary
-    Path to an existing codebase-memory-mcp.exe. If omitted, the script builds it
+    Path to an existing memora-mcp.exe. If omitted, the script builds it
     (target selected by -Target) into build/c/.
 
 .PARAMETER Target
@@ -55,7 +55,7 @@
 .EXAMPLE
     pwsh -File scripts/test-windows.ps1
 .EXAMPLE
-    pwsh -File scripts/test-windows.ps1 -GuardsOnly -Binary build\c\codebase-memory-mcp.exe
+    pwsh -File scripts/test-windows.ps1 -GuardsOnly -Binary build\c\memora-mcp.exe
 #>
 [CmdletBinding()]
 param(
@@ -84,7 +84,7 @@ if (-not $tmp) { $tmp = "$env:USERPROFILE\AppData\Local\Temp" }
 function Resolve-Binary {
     param([string]$Explicit)
     if ($Explicit) { return (Resolve-Path $Explicit).Path }
-    $built = Join-Path $repoRoot "build\c\codebase-memory-mcp.exe"
+    $built = Join-Path $repoRoot "build\c\memora-mcp.exe"
     if (Test-Path $built) { return $built }
     Write-Host "Building $Target via Makefile.cbm ..." -ForegroundColor Cyan
     & $Make "-j" "-f" "Makefile.cbm" $Target "SANITIZE=" "TMP=$tmp" "TEMP=$tmp" "TMPDIR=$tmp"

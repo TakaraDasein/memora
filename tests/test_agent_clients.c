@@ -127,7 +127,7 @@ static int agent_write_rovo_override(const char *config_path, const char *mcp_pa
 
 static char *agent_deep_same_name_json(size_t depth) {
     static const char prefix[] = "{\"mcpServers\":";
-    static const char leaf[] = "{\"codebase-memory-mcp\":{\"command\":\"foreign\",\"args\":[]}}";
+    static const char leaf[] = "{\"memora-mcp\":{\"command\":\"foreign\",\"args\":[]}}";
     size_t prefix_length = strlen(prefix);
     size_t leaf_length = strlen(leaf);
     if (depth > (SIZE_MAX - leaf_length - 2U) / (prefix_length + 1U)) {
@@ -215,13 +215,13 @@ TEST(agent_clients_visual_studio_cleanup_survives_missing_command) {
     ASSERT(!cbm_agent_client_detect(CBM_AGENT_CLIENT_VISUAL_STUDIO, &options));
     ASSERT(cbm_agent_client_cleanup_candidate(CBM_AGENT_CLIENT_VISUAL_STUDIO, &options));
 
-    const char *foreign = "{\"servers\":{\"codebase-memory-mcp\":{\"type\":\"stdio\","
+    const char *foreign = "{\"servers\":{\"memora-mcp\":{\"type\":\"stdio\","
                           "\"command\":\"C:/User/tool.exe\",\"args\":[]}}}\n";
     char *dir = NULL;
     char *path = agent_fixture(foreign, &dir);
     ASSERT_NOT_NULL(path);
     ASSERT_EQ(cbm_agent_client_remove_mcp(CBM_AGENT_CLIENT_VISUAL_STUDIO, path,
-                                          "C:/Tools/codebase-memory-mcp.exe"),
+                                          "C:/Tools/memora-mcp.exe"),
               CBM_AGENT_EDIT_FOREIGN);
     char *after = agent_read(path);
     ASSERT_NOT_NULL(after);
@@ -333,7 +333,7 @@ TEST(agent_clients_resolve_documented_paths_and_precedence) {
         0);
     ASSERT_STR_EQ(path, "/xdg/gitlab/duo/mcp.json");
     ASSERT_EQ(cbm_agent_client_resolve_path(CBM_AGENT_CLIENT_AMP, &options, path, sizeof(path)), 0);
-    ASSERT_STR_EQ(path, "/home/tester/.config/agents/skills/codebase-memory/mcp.json");
+    ASSERT_STR_EQ(path, "/home/tester/.config/agents/skills/memora-mcp/mcp.json");
     ASSERT_EQ(cbm_agent_client_resolve_path(CBM_AGENT_CLIENT_DEVIN, &options, path, sizeof(path)),
               0);
     ASSERT_STR_EQ(path, "/home/tester/.config/devin/config.json");
@@ -795,7 +795,7 @@ TEST(agent_clients_cody_uses_literal_dotted_key_without_feature_or_permission_ed
     ASSERT_NULL(strstr(installed, "autoApprove"));
     free(installed);
 
-    const char *foreign = "{\"cody.mcpServers\":{\"codebase-memory-mcp\":{\"command\":\"foreign\","
+    const char *foreign = "{\"cody.mcpServers\":{\"memora-mcp\":{\"command\":\"foreign\","
                           "\"args\":[]}},\"cody.enabled\":false}\n";
     ASSERT_EQ(th_write_file(path, foreign), 0);
     ASSERT_EQ(cbm_agent_client_install_mcp(CBM_AGENT_CLIENT_SOURCEGRAPH_CODY, path, "/usr/bin/cbm"),
@@ -817,7 +817,7 @@ TEST(agent_clients_json_schemas_are_exact_and_policy_neutral) {
         {CBM_AGENT_CLIENT_KIMI, "\"mcpServers\""},
         {CBM_AGENT_CLIENT_GITLAB_DUO, "\"type\": \"stdio\""},
         {CBM_AGENT_CLIENT_ROVO_DEV, "\"transport\": \"stdio\""},
-        {CBM_AGENT_CLIENT_AMP, "\"codebase-memory-mcp\""},
+        {CBM_AGENT_CLIENT_AMP, "\"memora-mcp\""},
         {CBM_AGENT_CLIENT_DEVIN, "\"mcpServers\""},
         {CBM_AGENT_CLIENT_TABNINE, "\"mcpServers\""},
         {CBM_AGENT_CLIENT_VISUAL_STUDIO, "\"servers\""},
@@ -867,9 +867,9 @@ TEST(agent_clients_new_standard_json_profiles_preserve_foreign_entries) {
     for (size_t i = 0U; i < sizeof(clients) / sizeof(clients[0]); i++) {
         const char *foreign =
             clients[i] == CBM_AGENT_CLIENT_POCHI
-                ? "{\"mcp\":{\"codebase-memory-mcp\":{\"command\":\"foreign\","
+                ? "{\"mcp\":{\"memora-mcp\":{\"command\":\"foreign\","
                   "\"args\":[]}}}\n"
-                : "{\"mcpServers\":{\"codebase-memory-mcp\":{\"command\":\"foreign\","
+                : "{\"mcpServers\":{\"memora-mcp\":{\"command\":\"foreign\","
                   "\"args\":[]}}}\n";
         char *dir = NULL;
         char *path = agent_fixture(foreign, &dir);
@@ -888,7 +888,7 @@ TEST(agent_clients_new_standard_json_profiles_preserve_foreign_entries) {
 
 TEST(agent_clients_refuse_foreign_and_preserve_modified_entries) {
     const char *foreign =
-        "{\"mcpServers\":{\"codebase-memory-mcp\":{\"command\":\"foreign\",\"args\":[]}}}\n";
+        "{\"mcpServers\":{\"memora-mcp\":{\"command\":\"foreign\",\"args\":[]}}}\n";
     char *dir = NULL;
     char *path = agent_fixture(foreign, &dir);
     ASSERT_NOT_NULL(path);
@@ -939,7 +939,7 @@ TEST(agent_clients_remove_only_canonical_and_missing_is_noop) {
               CBM_AGENT_EDIT_OK);
     char *after = agent_read(path);
     ASSERT_NOT_NULL(after);
-    ASSERT_NULL(strstr(after, "codebase-memory-mcp"));
+    ASSERT_NULL(strstr(after, "memora-mcp"));
     ASSERT_NOT_NULL(strstr(after, "\"keep\":true"));
     free(after);
     free(path);
@@ -1016,10 +1016,10 @@ TEST(agent_clients_continue_uses_owned_yaml_sequence_item) {
         CBM_AGENT_EDIT_OK);
     char *first = agent_read(path);
     ASSERT_NOT_NULL(first);
-    ASSERT_NOT_NULL(strstr(first, "  - name: codebase-memory-mcp\n"));
+    ASSERT_NOT_NULL(strstr(first, "  - name: memora-mcp\n"));
     ASSERT_NOT_NULL(strstr(first, "    command: \"/opt/cbm path/#quoted\"\n"));
     ASSERT_NOT_NULL(strstr(first, "  - name: other\n"));
-    ASSERT_EQ(agent_occurrences(first, "name: codebase-memory-mcp"), 1U);
+    ASSERT_EQ(agent_occurrences(first, "name: memora-mcp"), 1U);
     ASSERT_EQ(
         cbm_agent_client_install_mcp(CBM_AGENT_CLIENT_CONTINUE, path, "/opt/cbm path/#quoted"),
         CBM_AGENT_EDIT_OK);
@@ -1028,7 +1028,7 @@ TEST(agent_clients_continue_uses_owned_yaml_sequence_item) {
     ASSERT_EQ(cbm_agent_client_remove_mcp(CBM_AGENT_CLIENT_CONTINUE, path, "/opt/cbm path/#quoted"),
               CBM_AGENT_EDIT_OK);
     char *removed = agent_read(path);
-    ASSERT_NULL(strstr(removed, "name: codebase-memory-mcp"));
+    ASSERT_NULL(strstr(removed, "name: memora-mcp"));
     ASSERT_NOT_NULL(strstr(removed, "name: other"));
     free(first);
     free(second);
@@ -1039,7 +1039,7 @@ TEST(agent_clients_continue_uses_owned_yaml_sequence_item) {
 }
 
 TEST(agent_clients_continue_refuses_foreign_same_name_and_nonsequence_section) {
-    const char *foreign = "mcpServers:\n  - name: \"codebase-memory-mcp\"\n"
+    const char *foreign = "mcpServers:\n  - name: \"memora-mcp\"\n"
                           "    command: foreign\n    args: []\n";
     char *dir = NULL;
     char *path = agent_fixture(foreign, &dir);

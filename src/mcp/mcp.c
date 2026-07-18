@@ -1164,7 +1164,7 @@ static char *cbm_mcp_initialize_response_for_profile(const char *params_json,
     yyjson_mut_obj_add_str(doc, root, "protocolVersion", version);
 
     yyjson_mut_val *impl = yyjson_mut_obj(doc);
-    yyjson_mut_obj_add_str(doc, impl, "name", "codebase-memory-mcp");
+    yyjson_mut_obj_add_str(doc, impl, "name", "memora-mcp");
     yyjson_mut_obj_add_str(doc, impl, "version", cbm_cli_get_version());
     yyjson_mut_obj_add_val(doc, root, "serverInfo", impl);
 
@@ -1292,7 +1292,7 @@ static const char *cache_dir(char *buf, size_t bufsz);
 static bool is_project_db_file(const char *name, size_t len);
 bool cbm_validate_project_name(const char *project);
 
-/* #1025: agents naturally pass the repo FOLDER name ("codebase-memory-mcp"),
+/* #1025: agents naturally pass the repo FOLDER name ("memora-mcp"),
  * but indexed project names derive from the full path
  * (E:\project\graph\x -> "E-project-graph-x"), so the exact lookup fails
  * while list_projects clearly shows the project. When no <project>.db exists,
@@ -6357,7 +6357,7 @@ static bool write_skip_logfile(const char *project, const cbm_file_error_t *errs
             partials++;
         }
     }
-    (void)fprintf(f, "# codebase-memory-mcp index coverage report\n");
+    (void)fprintf(f, "# memora-mcp index coverage report\n");
     (void)fprintf(f, "# project=%s skipped=%d parse_partial=%d\n", project ? project : "",
                   count - partials, partials);
     (void)fprintf(f, "# columns: phase\treason\tpath\n");
@@ -9470,7 +9470,7 @@ static void maybe_auto_index(cbm_mcp_server_t *srv) {
 
     if (!auto_index) {
         cbm_log_info("autoindex.skip", "reason", "disabled", "hint",
-                     "run: codebase-memory-mcp config set auto_index true");
+                     "run: memora-mcp config set auto_index true");
         return;
     }
 
@@ -9504,7 +9504,7 @@ static void maybe_auto_index(cbm_mcp_server_t *srv) {
 
 /* ── Background update check ──────────────────────────────────── */
 
-#define UPDATE_CHECK_URL "https://api.github.com/repos/DeusData/codebase-memory-mcp/releases/latest"
+#define UPDATE_CHECK_URL "https://api.github.com/repos/DeusData/memora-mcp/releases/latest"
 
 static void *update_check_thread(void *arg) {
     cbm_mcp_server_t *srv = (cbm_mcp_server_t *)arg;
@@ -9545,9 +9545,9 @@ static void *update_check_thread(void *arg) {
         const char *current = cbm_cli_get_version();
         if (cbm_compare_versions(tag_str, current) > 0) {
             snprintf(srv->update_notice, sizeof(srv->update_notice),
-                     "Update available: %s -> %s -- run: codebase-memory-mcp update  |  "
-                     "Enjoying codebase-memory-mcp? Please leave a star: "
-                     "https://github.com/DeusData/codebase-memory-mcp",
+                     "Update available: %s -> %s -- run: memora-mcp update  |  "
+                     "Enjoying memora-mcp? Please leave a star: "
+                     "https://github.com/TakaraDasein/memora",
                      current, tag_str);
             cbm_log_info("update.available", "current", current, "latest", tag_str);
         }

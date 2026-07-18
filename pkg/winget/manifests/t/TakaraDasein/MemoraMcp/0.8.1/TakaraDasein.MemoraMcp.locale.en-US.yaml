@@ -1,0 +1,29 @@
+PackageIdentifier: TakaraDasein.memora-mcp
+PackageVersion: 0.8.1
+PackageLocale: en-US
+Publisher: TakaraDasein
+PublisherUrl: https://github.com/TakaraDasein
+PublisherSupportUrl: https://github.com/TakaraDasein/memora/issues
+PackageName: memora-mcp
+PackageUrl: https://github.com/TakaraDasein/memora
+License: MIT
+LicenseUrl: https://github.com/TakaraDasein/memora/blob/main/LICENSE
+ShortDescription: Memora MCP — fork of codebase-memory-mcp, code intelligence for AI coding agents
+Description: |-
+  memora-mcp is a fork of codebase-memory-mcp, maintaining the same fast single
+  static binary MCP server that indexes codebases at extreme speed and exposes 15
+  MCP tools for AI coding agents. Full indexes an average repository in milliseconds,
+  the Linux kernel (28M LOC) in 3 minutes. Supports 158 languages via vendored
+  tree-sitter grammars. Zero dependencies.
+Moniker: memora-mcp
+Tags:
+  - mcp
+  - ai
+  - claude
+  - code-intelligence
+  - codebase
+  - developer-tools
+  - tree-sitter
+ReleaseNotesUrl: https://github.com/TakaraDasein/memora/releases/tag/v0.8.1
+ManifestType: defaultLocale
+ManifestVersion: 1.6.0

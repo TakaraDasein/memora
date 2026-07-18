@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# soak-test.sh — Endurance test for codebase-memory-mcp.
+# soak-test.sh — Endurance test for memora-mcp.
 #
 # Runs compressed workload cycles: queries, file mutations, reindexes, idle periods.
 # Reads diagnostics from /tmp/cbm-diagnostics-<pid>.json (requires CBM_DIAGNOSTICS=1).

@@ -24,13 +24,13 @@
 #define CTE_PATH_CAP 1024
 #define CTE_FILE_CAP 16384
 
-static const char *CTE_BEGIN = "# BEGIN codebase-memory-mcp";
-static const char *CTE_END = "# END codebase-memory-mcp";
+static const char *CTE_BEGIN = "# BEGIN memora-mcp";
+static const char *CTE_END = "# END memora-mcp";
 static const char *CTE_TABLE = "mcp_servers";
 static const char *CTE_KEY = "name";
-static const char *CTE_IDENTITY = "codebase-memory-mcp";
-static const char *CTE_BODY = "name = \"codebase-memory-mcp\"\n"
-                              "command = \"codebase-memory-mcp\"\n";
+static const char *CTE_IDENTITY = "memora-mcp";
+static const char *CTE_BODY = "name = \"memora-mcp\"\n"
+                              "command = \"memora-mcp\"\n";
 
 static int cte_fixture(char *dir, size_t dir_size, char *path, size_t path_size) {
     char *created = th_mktempdir("cbm_toml_edit");
@@ -305,12 +305,12 @@ TEST(config_toml_managed_markers_ignore_multiline_strings) {
     char path[CTE_PATH_CAP];
     char actual[CTE_FILE_CAP];
     const char *original = "basic = \"\"\"\n"
-                           "# BEGIN codebase-memory-mcp\n"
-                           "# END codebase-memory-mcp\n"
+                           "# BEGIN memora-mcp\n"
+                           "# END memora-mcp\n"
                            "\"\"\"\n"
                            "literal = '''\n"
-                           "# BEGIN codebase-memory-mcp\n"
-                           "# END codebase-memory-mcp\n"
+                           "# BEGIN memora-mcp\n"
+                           "# END memora-mcp\n"
                            "'''\n";
     ASSERT_EQ(cte_fixture(dir, sizeof(dir), path, sizeof(path)), 0);
     ASSERT_EQ(th_write_file(path, original), 0);
@@ -333,12 +333,12 @@ TEST(config_toml_managed_rejects_marker_in_block_and_unclosed_multiline) {
     ASSERT_EQ(cte_fixture(dir, sizeof(dir), path, sizeof(path)), 0);
     ASSERT_EQ(th_write_file(path, "keep = true\n"), 0);
     ASSERT_EQ(cbm_toml_upsert_managed_block(path, CTE_BEGIN, CTE_END,
-                                            "value = true\n# END codebase-memory-mcp\n"),
+                                            "value = true\n# END memora-mcp\n"),
               -1);
     ASSERT_EQ(cte_read(path, actual, sizeof(actual)), 0);
     ASSERT_STR_EQ(actual, "keep = true\n");
 
-    const char *unclosed = "description = \"\"\"\n# BEGIN codebase-memory-mcp\n";
+    const char *unclosed = "description = \"\"\"\n# BEGIN memora-mcp\n";
     ASSERT_EQ(th_write_file(path, unclosed), 0);
     ASSERT_EQ(cbm_toml_upsert_managed_block(path, CTE_BEGIN, CTE_END, "owned = true\n"), -1);
     ASSERT_EQ(cte_read(path, actual, sizeof(actual)), 0);
@@ -350,14 +350,14 @@ TEST(config_toml_managed_rejects_marker_in_block_and_unclosed_multiline) {
 TEST(config_toml_codex_semantic_conflicts_fail_closed) {
     char dir[CTE_PATH_CAP];
     char path[CTE_PATH_CAP];
-    const char *codex_block = "[mcp_servers.codebase-memory-mcp]\ncommand = \"new\"\n";
+    const char *codex_block = "[mcp_servers.memora-mcp]\ncommand = \"new\"\n";
     static const char *conflicts[] = {
-        "[mcp_servers.\"codebase-memory-mcp\"]\ncommand = \"old\"\n",
-        "[\"mcp_servers\".'codebase-memory-mcp']\ncommand = \"old\"\n",
-        "mcp_servers.\"codebase-memory-mcp\".command = \"old\"\n",
-        "[mcp_servers]\n\"codebase-memory-mcp\".command = \"old\"\n",
-        ("[mcp_servers.codebase-memory-mcp]\ncommand = \"one\"\n"
-         "[mcp_servers.\"codebase-memory-mcp\"]\ncommand = \"two\"\n"),
+        "[mcp_servers.\"memora-mcp\"]\ncommand = \"old\"\n",
+        "[\"mcp_servers\".'memora-mcp']\ncommand = \"old\"\n",
+        "mcp_servers.\"memora-mcp\".command = \"old\"\n",
+        "[mcp_servers]\n\"memora-mcp\".command = \"old\"\n",
+        ("[mcp_servers.memora-mcp]\ncommand = \"one\"\n"
+         "[mcp_servers.\"memora-mcp\"]\ncommand = \"two\"\n"),
     };
     ASSERT_EQ(cte_fixture(dir, sizeof(dir), path, sizeof(path)), 0);
     for (size_t i = 0; i < sizeof(conflicts) / sizeof(conflicts[0]); ++i) {
@@ -375,12 +375,12 @@ TEST(config_toml_vibe_body_validation_fail_closed) {
     static const char *invalid_bodies[] = {
         "command = \"missing identity\"\n",
         "name = \"wrong\"\ncommand = \"x\"\n",
-        "name = \"codebase-memory-mcp\"\nname = \"codebase-memory-mcp\"\n",
-        "name = \"codebase-memory-mcp\"\n[evil]\npwned = true\n",
-        "name = \"codebase-memory-mcp\"\n[[evil]]\npwned = true\n",
-        "name = \"codebase-memory-mcp\"\ncommand.value = \"x\"\n",
-        "name = \"codebase-memory-mcp\"\ndescription = \"\"\"ambiguous\"\"\"\n",
-        "name = \"codebase-memory-mcp\"\nthis is not an assignment\n",
+        "name = \"memora-mcp\"\nname = \"memora-mcp\"\n",
+        "name = \"memora-mcp\"\n[evil]\npwned = true\n",
+        "name = \"memora-mcp\"\n[[evil]]\npwned = true\n",
+        "name = \"memora-mcp\"\ncommand.value = \"x\"\n",
+        "name = \"memora-mcp\"\ndescription = \"\"\"ambiguous\"\"\"\n",
+        "name = \"memora-mcp\"\nthis is not an assignment\n",
     };
     for (size_t i = 0; i < sizeof(invalid_bodies) / sizeof(invalid_bodies[0]); ++i) {
         ASSERT(cte_assert_unchanged_after_vibe_upsert(path, original, invalid_bodies[i]));
@@ -395,14 +395,14 @@ TEST(config_toml_target_table_rejects_significant_nonassignments_byte_identicall
     char actual[CTE_FILE_CAP];
     static const char *malformed[] = {
         "[[mcp_servers]]\n"
-        "name = \"codebase-memory-mcp\"\n"
+        "name = \"memora-mcp\"\n"
         "this is not an assignment\n"
         "command = \"winner\"\n",
         "[[mcp_servers]]\n"
-        "name = \"codebase-memory-mcp\"\n"
+        "name = \"memora-mcp\"\n"
         "command \"missing equals\"\n",
         "[[mcp_servers]]\n"
-        "name = \"codebase-memory-mcp\"\n"
+        "name = \"memora-mcp\"\n"
         "@invalid\n",
     };
     ASSERT_EQ(cte_fixture(dir, sizeof(dir), path, sizeof(path)), 0);
@@ -419,14 +419,14 @@ TEST(config_toml_target_table_rejects_significant_nonassignments_byte_identicall
         ASSERT_STR_EQ(actual, malformed[i]);
     }
 
-    const char *malformed_regular = "[mcp_servers.codebase-memory-mcp]\n"
+    const char *malformed_regular = "[mcp_servers.memora-mcp]\n"
                                     "command = \"winner\"\n"
                                     "this is not an assignment\n"
                                     "[unrelated]\n"
                                     "keep = true\n";
     ASSERT_EQ(th_write_file(path, malformed_regular), 0);
     ASSERT_EQ(
-        cbm_toml_remove_legacy_table(path, "mcp_servers.codebase-memory-mcp", CTE_BEGIN, CTE_END),
+        cbm_toml_remove_legacy_table(path, "mcp_servers.memora-mcp", CTE_BEGIN, CTE_END),
         -1);
     ASSERT_EQ(cte_read(path, actual, sizeof(actual)), 0);
     ASSERT_STR_EQ(actual, malformed_regular);
@@ -439,14 +439,14 @@ TEST(config_toml_legacy_remove_reports_foreign_table_without_mutation) {
     char path[CTE_PATH_CAP];
     char actual[CTE_FILE_CAP];
     const char *foreign = "theme = \"dark\"\n"
-                          "[mcp_servers.codebase-memory-mcp]\n"
+                          "[mcp_servers.memora-mcp]\n"
                           "command = \"/opt/user-tool\"\n"
                           "args = []\n"
                           "user_field = true\n";
     ASSERT_EQ(cte_fixture(dir, sizeof(dir), path, sizeof(path)), 0);
     ASSERT_EQ(th_write_file(path, foreign), 0);
     ASSERT_EQ(
-        cbm_toml_remove_legacy_table(path, "mcp_servers.codebase-memory-mcp", CTE_BEGIN, CTE_END),
+        cbm_toml_remove_legacy_table(path, "mcp_servers.memora-mcp", CTE_BEGIN, CTE_END),
         1);
     ASSERT_EQ(cte_read(path, actual, sizeof(actual)), 0);
     ASSERT_STR_EQ(actual, foreign);
@@ -479,7 +479,7 @@ TEST(config_toml_vibe_remove_includes_descendant_tables) {
     char actual[CTE_FILE_CAP];
     ASSERT_EQ(cte_fixture(dir, sizeof(dir), path, sizeof(path)), 0);
     ASSERT_EQ(th_write_file(path, "[[mcp_servers]]\n"
-                                  "name = \"codebase-memory-mcp\"\n"
+                                  "name = \"memora-mcp\"\n"
                                   "command = \"owned\"\n"
                                   "[mcp_servers.environment]\n"
                                   "TOKEN = \"owned\"\n"
@@ -502,12 +502,12 @@ TEST(config_toml_vibe_reinstall_preserves_user_fields_and_descendants) {
     char dir[CTE_PATH_CAP];
     char path[CTE_PATH_CAP];
     char actual[CTE_FILE_CAP];
-    const char *desired = "name = \"codebase-memory-mcp\"\n"
+    const char *desired = "name = \"memora-mcp\"\n"
                           "transport = \"stdio\"\n"
                           "command = \"new\"\n";
     ASSERT_EQ(cte_fixture(dir, sizeof(dir), path, sizeof(path)), 0);
     ASSERT_EQ(th_write_file(path, "[[mcp_servers]]\n"
-                                  "name = \"codebase-memory-mcp\" # identity comment\n"
+                                  "name = \"memora-mcp\" # identity comment\n"
                                   "command = \"old\"\n"
                                   "timeout = 45 # user field\n"
                                   "args = [\"--user\"]\n"
@@ -538,7 +538,7 @@ TEST(config_toml_preserves_bom_crlf_and_handles_no_final_newline) {
     ASSERT_EQ(cte_read(path, actual, sizeof(actual)), 0);
     ASSERT(memcmp(actual, "\xEF\xBB\xBF", 3U) == 0);
     ASSERT_NOT_NULL(strstr(actual, "keep = true\r\n"));
-    ASSERT_NOT_NULL(strstr(actual, "# BEGIN codebase-memory-mcp\r\nowned = true\r\n"));
+    ASSERT_NOT_NULL(strstr(actual, "# BEGIN memora-mcp\r\nowned = true\r\n"));
     ASSERT_EQ(cbm_toml_upsert_managed_block(path, CTE_BEGIN, CTE_END, "owned = true\n"), 0);
     ASSERT_EQ(cte_read(path, actual, sizeof(actual)), 0);
     ASSERT_EQ(cte_occurrences(actual, CTE_BEGIN), 1);
@@ -546,9 +546,9 @@ TEST(config_toml_preserves_bom_crlf_and_handles_no_final_newline) {
     ASSERT_EQ(cte_read(path, actual, sizeof(actual)), 0);
     ASSERT_STR_EQ(actual, "\xEF\xBB\xBFkeep = true\r\n");
 
-    ASSERT_EQ(th_write_file(path, "\xEF\xBB\xBF# BEGIN codebase-memory-mcp\r\n"
+    ASSERT_EQ(th_write_file(path, "\xEF\xBB\xBF# BEGIN memora-mcp\r\n"
                                   "old = true\r\n"
-                                  "# END codebase-memory-mcp\r\n"),
+                                  "# END memora-mcp\r\n"),
               0);
     ASSERT_EQ(cbm_toml_upsert_managed_block(path, CTE_BEGIN, CTE_END, "new = true\n"), 0);
     ASSERT_EQ(cte_read(path, actual, sizeof(actual)), 0);
@@ -560,14 +560,14 @@ TEST(config_toml_preserves_bom_crlf_and_handles_no_final_newline) {
     ASSERT_STR_EQ(actual, "\xEF\xBB\xBF");
 
     ASSERT_EQ(th_write_file(path, "\xEF\xBB\xBF[[\"mcp_servers\"]]\r\n"
-                                  "name = \"codebase-memory-mcp\"\r\n"
+                                  "name = \"memora-mcp\"\r\n"
                                   "command = \"old\""),
               0);
     ASSERT_EQ(cbm_toml_upsert_named_array_table(path, CTE_TABLE, CTE_KEY, CTE_IDENTITY, CTE_BODY),
               0);
     ASSERT_EQ(cte_read(path, actual, sizeof(actual)), 0);
     ASSERT(memcmp(actual, "\xEF\xBB\xBF", 3U) == 0);
-    ASSERT_NOT_NULL(strstr(actual, "command = \"codebase-memory-mcp\"\r\n"));
+    ASSERT_NOT_NULL(strstr(actual, "command = \"memora-mcp\"\r\n"));
 
     ASSERT_EQ(th_write_file(path, "keep = true"), 0);
     ASSERT_EQ(cbm_toml_upsert_named_array_table(path, CTE_TABLE, CTE_KEY, CTE_IDENTITY, CTE_BODY),
@@ -629,9 +629,9 @@ TEST(config_toml_managed_fresh_missing_file) {
 
     ASSERT_EQ(cbm_toml_upsert_managed_block(path, CTE_BEGIN, CTE_END, "enabled = true\n"), 0);
     ASSERT_EQ(cte_read(path, actual, sizeof(actual)), 0);
-    ASSERT_STR_EQ(actual, "# BEGIN codebase-memory-mcp\n"
+    ASSERT_STR_EQ(actual, "# BEGIN memora-mcp\n"
                           "enabled = true\n"
-                          "# END codebase-memory-mcp\n");
+                          "# END memora-mcp\n");
     th_cleanup(dir);
     PASS();
 }
@@ -642,18 +642,18 @@ TEST(config_toml_managed_replace_preserves_unrelated) {
     char actual[CTE_FILE_CAP];
     ASSERT_EQ(cte_fixture(dir, sizeof(dir), path, sizeof(path)), 0);
     ASSERT_EQ(th_write_file(path, "title = \"keep\"\n"
-                                  "# BEGIN codebase-memory-mcp\n"
+                                  "# BEGIN memora-mcp\n"
                                   "old = true\n"
-                                  "# END codebase-memory-mcp\n"
+                                  "# END memora-mcp\n"
                                   "tail = \"keep\"\n"),
               0);
 
     ASSERT_EQ(cbm_toml_upsert_managed_block(path, CTE_BEGIN, CTE_END, "new = \"value\""), 0);
     ASSERT_EQ(cte_read(path, actual, sizeof(actual)), 0);
     ASSERT_STR_EQ(actual, "title = \"keep\"\n"
-                          "# BEGIN codebase-memory-mcp\n"
+                          "# BEGIN memora-mcp\n"
                           "new = \"value\"\n"
-                          "# END codebase-memory-mcp\n"
+                          "# END memora-mcp\n"
                           "tail = \"keep\"\n");
     th_cleanup(dir);
     PASS();
@@ -665,9 +665,9 @@ TEST(config_toml_managed_remove) {
     char actual[CTE_FILE_CAP];
     ASSERT_EQ(cte_fixture(dir, sizeof(dir), path, sizeof(path)), 0);
     ASSERT_EQ(th_write_file(path, "before = true\n"
-                                  "# BEGIN codebase-memory-mcp\n"
+                                  "# BEGIN memora-mcp\n"
                                   "owned = true\n"
-                                  "# END codebase-memory-mcp\n"
+                                  "# END memora-mcp\n"
                                   "after = true\n"),
               0);
 
@@ -702,7 +702,7 @@ TEST(config_toml_managed_unbalanced_duplicate_fail_closed) {
     char path[CTE_PATH_CAP];
     char actual[CTE_FILE_CAP];
     const char *unbalanced = "keep = true\n"
-                             "# BEGIN codebase-memory-mcp\n"
+                             "# BEGIN memora-mcp\n"
                              "owned = true\n";
     ASSERT_EQ(cte_fixture(dir, sizeof(dir), path, sizeof(path)), 0);
     ASSERT_EQ(th_write_file(path, unbalanced), 0);
@@ -710,12 +710,12 @@ TEST(config_toml_managed_unbalanced_duplicate_fail_closed) {
     ASSERT_EQ(cte_read(path, actual, sizeof(actual)), 0);
     ASSERT_STR_EQ(actual, unbalanced);
 
-    const char *duplicate = "# BEGIN codebase-memory-mcp\n"
+    const char *duplicate = "# BEGIN memora-mcp\n"
                             "one = true\n"
-                            "# END codebase-memory-mcp\n"
-                            "# BEGIN codebase-memory-mcp\n"
+                            "# END memora-mcp\n"
+                            "# BEGIN memora-mcp\n"
                             "two = true\n"
-                            "# END codebase-memory-mcp\n";
+                            "# END memora-mcp\n";
     ASSERT_EQ(th_write_file(path, duplicate), 0);
     ASSERT_EQ(cbm_toml_remove_managed_block(path, CTE_BEGIN, CTE_END), -1);
     ASSERT_EQ(cte_read(path, actual, sizeof(actual)), 0);
@@ -747,8 +747,8 @@ TEST(config_toml_vibe_insert_among_other_tables) {
                           "name = \"other-server\"\n"
                           "command = \"other\"\n\n"
                           "[[mcp_servers]]\n"
-                          "name = \"codebase-memory-mcp\"\n"
-                          "command = \"codebase-memory-mcp\"\n");
+                          "name = \"memora-mcp\"\n"
+                          "command = \"memora-mcp\"\n");
     th_cleanup(dir);
     PASS();
 }
@@ -757,7 +757,7 @@ TEST(config_toml_vibe_replace_target_preserves_comments_tables) {
     char dir[CTE_PATH_CAP];
     char path[CTE_PATH_CAP];
     char actual[CTE_FILE_CAP];
-    const char *replacement = "name = \"codebase-memory-mcp\"\n"
+    const char *replacement = "name = \"memora-mcp\"\n"
                               "command = \"/new/path\"\n";
     ASSERT_EQ(cte_fixture(dir, sizeof(dir), path, sizeof(path)), 0);
     ASSERT_EQ(th_write_file(path, "# keep top\n"
@@ -766,7 +766,7 @@ TEST(config_toml_vibe_replace_target_preserves_comments_tables) {
                                   "command = \"other\"\n\n"
                                   "# keep target preface\n"
                                   "[[mcp_servers]]\n"
-                                  "name = \"codebase-memory-mcp\" # owned\n"
+                                  "name = \"memora-mcp\" # owned\n"
                                   "command = \"old\"\n"
                                   "args = [\"--old\"]\n\n"
                                   "# keep after target\n"
@@ -793,14 +793,14 @@ TEST(config_toml_vibe_owned_table_installs_idempotently_and_removes_exact_state)
     char dir[CTE_PATH_CAP];
     char path[CTE_PATH_CAP];
     char actual[CTE_FILE_CAP];
-    const char *canonical = "name = \"codebase-memory-mcp\"\n"
+    const char *canonical = "name = \"memora-mcp\"\n"
                             "transport = \"stdio\"\n"
-                            "command = \"/opt/codebase-memory-mcp\"\n"
+                            "command = \"/opt/memora-mcp\"\n"
                             "args = []\n";
     const char *installed = "[[mcp_servers]]\n"
-                            "name = \"codebase-memory-mcp\"\n"
+                            "name = \"memora-mcp\"\n"
                             "transport = \"stdio\"\n"
-                            "command = \"/opt/codebase-memory-mcp\"\n"
+                            "command = \"/opt/memora-mcp\"\n"
                             "args = []\n";
     ASSERT_EQ(cte_fixture(dir, sizeof(dir), path, sizeof(path)), 0);
 
@@ -829,21 +829,21 @@ TEST(config_toml_vibe_owned_table_preserves_foreign_same_name_state) {
     char dir[CTE_PATH_CAP];
     char path[CTE_PATH_CAP];
     char actual[CTE_FILE_CAP];
-    const char *canonical = "name = \"codebase-memory-mcp\"\n"
+    const char *canonical = "name = \"memora-mcp\"\n"
                             "transport = \"stdio\"\n"
-                            "command = \"/opt/codebase-memory-mcp\"\n"
+                            "command = \"/opt/memora-mcp\"\n"
                             "args = []\n";
     const char *foreign_cases[] = {
         "# user-owned Vibe server\n"
         "[[mcp_servers]]\n"
-        "name = \"codebase-memory-mcp\"\n"
+        "name = \"memora-mcp\"\n"
         "transport = \"stdio\"\n"
         "command = \"/opt/user-owned-mcp\"\n"
         "args = [\"--custom\"]\n",
         "[[mcp_servers]]\n"
-        "name = \"codebase-memory-mcp\"\n"
+        "name = \"memora-mcp\"\n"
         "transport = \"stdio\"\n"
-        "command = \"/opt/codebase-memory-mcp\"\n"
+        "command = \"/opt/memora-mcp\"\n"
         "args = []\n"
         "startup_timeout_sec = 45\n",
     };
@@ -873,7 +873,7 @@ TEST(config_toml_vibe_remove_first_target) {
     char actual[CTE_FILE_CAP];
     ASSERT_EQ(cte_fixture(dir, sizeof(dir), path, sizeof(path)), 0);
     ASSERT_EQ(th_write_file(path, "[[mcp_servers]]\n"
-                                  "name = \"codebase-memory-mcp\"\n"
+                                  "name = \"memora-mcp\"\n"
                                   "command = \"owned\"\n\n"
                                   "[[mcp_servers]]\n"
                                   "name = \"other\"\n"
@@ -896,7 +896,7 @@ TEST(config_toml_vibe_remove_middle_target) {
     ASSERT_EQ(th_write_file(path, "[[mcp_servers]]\n"
                                   "name = \"first\"\n\n"
                                   "[[mcp_servers]]\n"
-                                  "name = \"codebase-memory-mcp\"\n"
+                                  "name = \"memora-mcp\"\n"
                                   "command = \"owned\"\n\n"
                                   "[[mcp_servers]]\n"
                                   "name = \"last\"\n"),
@@ -919,7 +919,7 @@ TEST(config_toml_vibe_remove_last_target) {
     ASSERT_EQ(th_write_file(path, "[[mcp_servers]]\n"
                                   "name = \"other\"\n\n"
                                   "[[mcp_servers]]\n"
-                                  "name = \"codebase-memory-mcp\"\n"),
+                                  "name = \"memora-mcp\"\n"),
               0);
     ASSERT_EQ(cbm_toml_remove_named_array_table(path, CTE_TABLE, CTE_KEY, CTE_IDENTITY), 0);
     ASSERT_EQ(cte_read(path, actual, sizeof(actual)), 0);
@@ -936,7 +936,7 @@ TEST(config_toml_vibe_remove_only_target) {
     char actual[CTE_FILE_CAP];
     ASSERT_EQ(cte_fixture(dir, sizeof(dir), path, sizeof(path)), 0);
     ASSERT_EQ(th_write_file(path, "[[mcp_servers]]\n"
-                                  "name = \"codebase-memory-mcp\"\n"
+                                  "name = \"memora-mcp\"\n"
                                   "command = \"owned\"\n"),
               0);
     ASSERT_EQ(cbm_toml_remove_named_array_table(path, CTE_TABLE, CTE_KEY, CTE_IDENTITY), 0);
@@ -952,7 +952,7 @@ TEST(config_toml_vibe_literal_and_basic_identity) {
     char actual[CTE_FILE_CAP];
     ASSERT_EQ(cte_fixture(dir, sizeof(dir), path, sizeof(path)), 0);
     ASSERT_EQ(th_write_file(path, "[[mcp_servers]]\n"
-                                  "name = 'codebase-memory-mcp' # literal\n"
+                                  "name = 'memora-mcp' # literal\n"
                                   "command = 'owned'\n"),
               0);
     ASSERT_EQ(cbm_toml_remove_named_array_table(path, CTE_TABLE, CTE_KEY, CTE_IDENTITY), 0);
@@ -960,15 +960,15 @@ TEST(config_toml_vibe_literal_and_basic_identity) {
     ASSERT_STR_EQ(actual, "");
 
     ASSERT_EQ(th_write_file(path, "[[mcp_servers]]\n"
-                                  "name = \"codebase-memory-\\u006dcp\" # basic\n"
+                                  "name = \"memora-mcp-\\u006dcp\" # basic\n"
                                   "command = \"old\"\n"),
               0);
     ASSERT_EQ(cbm_toml_upsert_named_array_table(path, CTE_TABLE, CTE_KEY, CTE_IDENTITY, CTE_BODY),
               0);
     ASSERT_EQ(cte_read(path, actual, sizeof(actual)), 0);
     ASSERT_STR_EQ(actual, "[[mcp_servers]]\n"
-                          "name = \"codebase-memory-mcp\"\n"
-                          "command = \"codebase-memory-mcp\"\n");
+                          "name = \"memora-mcp\"\n"
+                          "command = \"memora-mcp\"\n");
     th_cleanup(dir);
     PASS();
 }
@@ -979,10 +979,10 @@ TEST(config_toml_vibe_duplicate_target_fail_closed) {
     char actual[CTE_FILE_CAP];
     const char *duplicate = "# preserve exactly\n"
                             "[[mcp_servers]]\n"
-                            "name = \"codebase-memory-mcp\"\n"
+                            "name = \"memora-mcp\"\n"
                             "command = \"first\"\n\n"
                             "[[mcp_servers]]\n"
-                            "name = 'codebase-memory-mcp'\n"
+                            "name = 'memora-mcp'\n"
                             "command = 'second'\n";
     ASSERT_EQ(cte_fixture(dir, sizeof(dir), path, sizeof(path)), 0);
     ASSERT_EQ(th_write_file(path, duplicate), 0);
@@ -1008,7 +1008,7 @@ TEST(config_toml_vibe_ambiguous_target_fail_closed) {
 
     const char *multiline = "[[mcp_servers]]\n"
                             "description = \"\"\"\n"
-                            "name = \"codebase-memory-mcp\"\n"
+                            "name = \"memora-mcp\"\n"
                             "\"\"\"\n"
                             "name = \"other\"\n";
     ASSERT_EQ(th_write_file(path, multiline), 0);
@@ -1017,7 +1017,7 @@ TEST(config_toml_vibe_ambiguous_target_fail_closed) {
     ASSERT_EQ(cte_read(path, actual, sizeof(actual)), 0);
     ASSERT_NOT_NULL(strstr(actual, "description = \"\"\""));
     ASSERT_NOT_NULL(strstr(actual, "name = \"other\""));
-    ASSERT_NOT_NULL(strstr(actual, "name = \"codebase-memory-mcp\""));
+    ASSERT_NOT_NULL(strstr(actual, "name = \"memora-mcp\""));
     th_cleanup(dir);
     PASS();
 }

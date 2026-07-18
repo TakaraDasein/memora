@@ -10,7 +10,7 @@ const path = require('path');
 const os = require('os');
 const { execFileSync } = require('child_process');
 
-const REPO = 'DeusData/codebase-memory-mcp';
+const REPO = 'TakaraDasein/memora';
 const VERSION = require('./package.json').version;
 const BIN_DIR = path.join(__dirname, 'bin');
 
@@ -83,7 +83,7 @@ async function verifyChecksum(archivePath, archiveName) {
         `Checksum mismatch for ${archiveName}:\n  expected: ${expected}\n  actual:   ${actual}`,
       );
     }
-    process.stdout.write('codebase-memory-mcp: checksum verified.\n');
+    process.stdout.write('memora-mcp: checksum verified.\n');
   } catch (err) {
     if (err.message.startsWith('Checksum mismatch')) throw err;
     // Non-fatal: checksum unavailable (network issue, pre-release, etc.)
@@ -96,7 +96,7 @@ async function main() {
   const platform = getPlatform();
   const arch = getArch();
   const ext = platform === 'windows' ? 'zip' : 'tar.gz';
-  const binName = platform === 'windows' ? 'codebase-memory-mcp.exe' : 'codebase-memory-mcp';
+  const binName = platform === 'windows' ? 'memora-mcp.exe' : 'memora-mcp';
   const binPath = path.join(BIN_DIR, binName);
 
   if (fs.existsSync(binPath)) {
@@ -112,11 +112,11 @@ async function main() {
   // Opt into the UI build (embedded graph visualization) with CBM_VARIANT=ui.
   // Default is the standard (headless) build. Mirrors install.sh --ui.
   const ui = (process.env.CBM_VARIANT || '').toLowerCase() === 'ui' ? 'ui-' : '';
-  const archive = `codebase-memory-mcp-${ui}${platform}-${arch}${variant}.${ext}`;
+  const archive = `memora-mcp-${ui}${platform}-${arch}${variant}.${ext}`;
   const url = `https://github.com/${REPO}/releases/download/v${VERSION}/${archive}`;
 
   const uiLabel = ui ? '(ui) ' : '';
-  process.stdout.write(`codebase-memory-mcp: downloading v${VERSION} ${uiLabel}for ${platform}/${arch}...\n`);
+  process.stdout.write(`memora-mcp: downloading v${VERSION} ${uiLabel}for ${platform}/${arch}...\n`);
 
   const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'cbm-install-'));
   const tmpArchive = path.join(tmpDir, `cbm.${ext}`);
@@ -149,14 +149,14 @@ async function main() {
     fs.copyFileSync(extracted, binPath);
     fs.chmodSync(binPath, 0o755);
 
-    process.stdout.write('codebase-memory-mcp: ready.\n');
+    process.stdout.write('memora-mcp: ready.\n');
   } finally {
     fs.rmSync(tmpDir, { recursive: true, force: true });
   }
 }
 
 main().catch((err) => {
-  process.stderr.write(`\ncodebase-memory-mcp: install failed — ${err.message}\n`);
+  process.stderr.write(`\nmemora-mcp: install failed — ${err.message}\n`);
   process.stderr.write(`You can install manually: https://github.com/${REPO}#installation\n`);
   // Non-fatal: don't block the rest of npm install
   process.exit(0);

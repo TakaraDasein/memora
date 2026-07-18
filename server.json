@@ -1,6 +1,6 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
-  "name": "com.takaradasein/memora",
+  "name": "com.takaradasein/memora-mcp",
   "title": "Memora",
   "description": "Servidor MCP experimental para indexación semántica de código y exploración con grafos de conocimiento. Fork de codebase-memory-mcp.",
   "repository": {

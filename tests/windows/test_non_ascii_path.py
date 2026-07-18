@@ -1,7 +1,7 @@
 """GREEN regression guard — non-ASCII repo paths keep all definitions on Windows.
 
 Guards the fix for issue #636 / #357 (landed on main via #700) at the product
-surface (real codebase-memory-mcp process, real SQLite DB, real stdio). Two
+surface (real memora-mcp process, real SQLite DB, real stdio). Two
 byte-identical TypeScript fixtures are indexed: one under an ASCII parent path,
 one under a non-ASCII parent path. The invariant under test:
 
@@ -24,7 +24,7 @@ Exit code: 0 == invariant holds (green), 1 == invariant violated (regression),
 2 == environment/setup error.
 
 Usage:
-    python test_non_ascii_path.py <path-to-codebase-memory-mcp[.exe]>
+    python test_non_ascii_path.py <path-to-memora-mcp[.exe]>
 """
 import json
 import os

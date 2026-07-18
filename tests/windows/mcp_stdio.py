@@ -1,6 +1,6 @@
 """Minimal MCP stdio client for the Windows red-test suite.
 
-Drives a real codebase-memory-mcp(.exe) over a line-delimited JSON-RPC stdio
+Drives a real memora-mcp(.exe) over a line-delimited JSON-RPC stdio
 pipe. The pipe carries UTF-8 bytes, so a non-ASCII repo_path reaches the server
 without passing through the Windows ANSI command-line code page (which mangles
 argv for a binary whose main() is not wmain/GetCommandLineW). This isolates the

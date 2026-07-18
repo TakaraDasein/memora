@@ -100,21 +100,21 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         run: |
           scripts/build.sh CC=gcc CXX=g++
-          scripts/smoke-test.sh "$(pwd)/build/c/codebase-memory-mcp"
+          scripts/smoke-test.sh "$(pwd)/build/c/memora-mcp"
 
       - name: Build prod + smoke (macOS)
         if: matrix.os == 'macos-14'
         run: |
           scripts/build.sh CC=cc CXX=c++
-          codesign --sign - --force build/c/codebase-memory-mcp
-          scripts/smoke-test.sh "$(pwd)/build/c/codebase-memory-mcp"
+          codesign --sign - --force build/c/memora-mcp
+          scripts/smoke-test.sh "$(pwd)/build/c/memora-mcp"
 
       - name: Build prod + smoke (Windows)
         if: matrix.os == 'windows-latest'
         shell: msys2 {0}
         run: |
           scripts/build.sh CC=clang CXX=clang++
-          BIN="$(pwd)/build/c/codebase-memory-mcp"
+          BIN="$(pwd)/build/c/memora-mcp"
           [ -f "${BIN}.exe" ] && BIN="${BIN}.exe"
           scripts/smoke-test.sh "$BIN"
 

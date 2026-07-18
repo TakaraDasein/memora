@@ -46,9 +46,9 @@ function buildIssueUrl(base: string, path: string, project: string | null): stri
 function buildAgentPrompt(issuesUrl: string | null, path: string, project: string | null): string {
   const where = issuesUrl
     ? `file a GitHub issue at ${issuesUrl}`
-    : "file a GitHub issue on the codebase-memory-mcp project";
+    : "file a GitHub issue on the memora-mcp project";
   return (
-    `codebase-memory-mcp could not fully index \`${path}\`` +
+    `memora-mcp could not fully index \`${path}\`` +
     (project ? ` (project \`${project}\`)` : "") +
     " — best-effort coverage signal. Please: " +
     "1) call the index_status MCP tool and note this file's flagged line ranges under parse_partial; " +
@@ -117,7 +117,7 @@ export function MissedCallout({ node, project, onClose }: MissedCalloutProps) {
       </p>
       <p className="text-[12px] leading-relaxed text-foreground/70">
         Ayúdanos con este caso: haz que tu agente resuma lo que falla al parsear
-        y crea un issue en GitHub para el proyecto codebase-memory-mcp.
+        y crea un issue en GitHub para el proyecto memora-mcp.
       </p>
 
       <div className="flex flex-col gap-2 mt-1">

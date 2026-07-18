@@ -2,7 +2,7 @@ r"""GREEN regression guard — the PreToolUse hook augmenter fires on Windows.
 
 Guards the fix for issue #618 (landed on main via #619) at the product surface.
 
-`codebase-memory-mcp hook-augment` is the non-blocking Claude Code PreToolUse
+`memora-mcp hook-augment` is the non-blocking Claude Code PreToolUse
 Grep/Glob augmenter: given a hook payload it should emit a `hookSpecificOutput`
 with `additionalContext` listing graph symbols that match the searched token.
 
@@ -22,7 +22,7 @@ Also passes on Linux/macOS (`cwd` starts with `/`).
 Exit code: 0 == augmenter fired (green), 1 == no-op (regression), 2 == setup error.
 
 Usage:
-    python test_hook_augment.py <path-to-codebase-memory-mcp[.exe]>
+    python test_hook_augment.py <path-to-memora-mcp[.exe]>
 """
 import json
 import os

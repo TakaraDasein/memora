@@ -249,7 +249,7 @@ TEST(shell_rejects_redirect_in) {
 }
 
 TEST(shell_accepts_clean_path) {
-    ASSERT_TRUE(cbm_validate_shell_arg("/home/user/.local/bin/codebase-memory-mcp"));
+    ASSERT_TRUE(cbm_validate_shell_arg("/home/user/.local/bin/memora-mcp"));
     PASS();
 }
 
@@ -526,7 +526,7 @@ TEST(exec_no_shell_captures_exit_code) {
  *
  *  Regression guard for #697: cbm_exec_no_shell used _spawnvp, whose
  *  MinGW CRT did not quote arguments containing spaces. The taskkill
- *  filter "IMAGENAME eq codebase-memory-mcp.exe" was passed as three
+ *  filter "IMAGENAME eq memora-mcp.exe" was passed as three
  *  bare tokens, so taskkill printed
  *      ERROR: Invalid argument/option - 'eq'.
  *  on every install. cbm_build_cmdline now performs MSVC-convention
@@ -550,8 +550,8 @@ TEST(exec_no_shell_captures_exit_code) {
 TEST(cmdline_taskkill_filter_is_single_quoted_token) {
     /* The exact #697 regression: the filter value contains spaces and
      * must survive as ONE quoted argument, not three bare words. */
-    const char *argv[] = {"taskkill", "/FI", "IMAGENAME eq codebase-memory-mcp.exe", NULL};
-    ASSERT_CMDLINE(argv, L"taskkill /FI \"IMAGENAME eq codebase-memory-mcp.exe\"");
+    const char *argv[] = {"taskkill", "/FI", "IMAGENAME eq memora-mcp.exe", NULL};
+    ASSERT_CMDLINE(argv, L"taskkill /FI \"IMAGENAME eq memora-mcp.exe\"");
     PASS();
 }
 
@@ -563,8 +563,8 @@ TEST(cmdline_simple_args_are_not_quoted) {
 }
 
 TEST(cmdline_single_arg_no_trailing_space) {
-    const char *argv[] = {"codebase-memory-mcp.exe", NULL};
-    ASSERT_CMDLINE(argv, L"codebase-memory-mcp.exe");
+    const char *argv[] = {"memora-mcp.exe", NULL};
+    ASSERT_CMDLINE(argv, L"memora-mcp.exe");
     PASS();
 }
 

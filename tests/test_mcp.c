@@ -212,7 +212,7 @@ TEST(jsonrpc_format_response_string_id_issue253) {
 TEST(jsonrpc_format_response) {
     cbm_jsonrpc_response_t resp = {
         .id = 1,
-        .result_json = "{\"name\":\"codebase-memory-mcp\"}",
+        .result_json = "{\"name\":\"memora-mcp\"}",
     };
     char *json = cbm_jsonrpc_format_response(&resp);
     ASSERT_NOT_NULL(json);
@@ -245,7 +245,7 @@ TEST(mcp_initialize_response) {
     /* Default (no params): returns latest supported version */
     char *json = cbm_mcp_initialize_response(NULL);
     ASSERT_NOT_NULL(json);
-    ASSERT_NOT_NULL(strstr(json, "codebase-memory-mcp"));
+    ASSERT_NOT_NULL(strstr(json, "memora-mcp"));
     ASSERT_NOT_NULL(strstr(json, "\"version\":\"9.8.7-test\""));
     ASSERT_NOT_NULL(strstr(json, "capabilities"));
     ASSERT_NOT_NULL(strstr(json, "tools"));
@@ -672,7 +672,7 @@ TEST(server_handle_initialize) {
                                    "\"params\":{\"capabilities\":{}}}");
     ASSERT_NOT_NULL(resp);
     ASSERT_NOT_NULL(strstr(resp, "\"id\":1"));
-    ASSERT_NOT_NULL(strstr(resp, "codebase-memory-mcp"));
+    ASSERT_NOT_NULL(strstr(resp, "memora-mcp"));
     ASSERT_NOT_NULL(strstr(resp, "capabilities"));
     free(resp);
 
@@ -827,13 +827,13 @@ TEST(server_handle_scout_profile_exposes_only_the_fast_tier) {
 
 TEST(analysis_profile_arguments_fail_closed_and_disable_http) {
     cbm_mcp_tool_profile_t profile = CBM_MCP_TOOL_PROFILE_ALL;
-    const char *no_profile[] = {"codebase-memory-mcp"};
-    const char *analysis_equals[] = {"codebase-memory-mcp", "--tool-profile=analysis"};
-    const char *analysis_pair[] = {"codebase-memory-mcp", "--tool-profile", "analysis"};
-    const char *scout_equals[] = {"codebase-memory-mcp", "--tool-profile=scout"};
-    const char *unknown_equals[] = {"codebase-memory-mcp", "--tool-profile=analaysis"};
-    const char *unknown_pair[] = {"codebase-memory-mcp", "--tool-profile", "all"};
-    const char *missing_value[] = {"codebase-memory-mcp", "--tool-profile"};
+    const char *no_profile[] = {"memora-mcp"};
+    const char *analysis_equals[] = {"memora-mcp", "--tool-profile=analysis"};
+    const char *analysis_pair[] = {"memora-mcp", "--tool-profile", "analysis"};
+    const char *scout_equals[] = {"memora-mcp", "--tool-profile=scout"};
+    const char *unknown_equals[] = {"memora-mcp", "--tool-profile=analaysis"};
+    const char *unknown_pair[] = {"memora-mcp", "--tool-profile", "all"};
+    const char *missing_value[] = {"memora-mcp", "--tool-profile"};
 
     ASSERT_EQ(cbm_mcp_parse_tool_profile_args(1, no_profile, &profile), 0);
     ASSERT_EQ(profile, CBM_MCP_TOOL_PROFILE_ALL);
@@ -2789,7 +2789,7 @@ TEST(tool_search_graph_accepts_project_name_alias_issue640) {
     PASS();
 }
 
-/* #1025: agents pass the repo FOLDER name ("codebase-memory-mcp"), but
+/* #1025: agents pass the repo FOLDER name ("memora-mcp"), but
  * indexed project names derive from the full path
  * (E:\project\graph\x -> "E-project-graph-x"), so exact lookup fails with
  * "project not found" while list_projects clearly shows the project. A
@@ -3539,7 +3539,7 @@ TEST(tool_manage_adr_no_project) {
  * MUST FAIL before fix: free(buf) is called before yy_doc_to_str serializes doc,
  * so result field is missing or contains garbage. MUST PASS after fix. */
 TEST(tool_manage_adr_get_with_existing_adr) {
-    /* Create a temp directory with .codebase-memory/adr.md */
+    /* Create a temp directory with .memora-mcp/adr.md */
     char tmp_dir[256];
     snprintf(tmp_dir, sizeof(tmp_dir), "/tmp/cbm-adr-test-XXXXXX");
     if (!cbm_mkdtemp(tmp_dir)) {
@@ -3547,7 +3547,7 @@ TEST(tool_manage_adr_get_with_existing_adr) {
     }
 
     char adr_dir[512];
-    snprintf(adr_dir, sizeof(adr_dir), "%s/.codebase-memory", tmp_dir);
+    snprintf(adr_dir, sizeof(adr_dir), "%s/.memora-mcp", tmp_dir);
     cbm_mkdir(adr_dir);
 
     char adr_path[512];

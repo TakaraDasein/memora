@@ -2,7 +2,7 @@
 
 Guards the CLI-argv fix for issue #636 / #423 / #20 on native Windows.
 
-The documented entrypoint `codebase-memory-mcp cli index_repository '<json>'`
+The documented entrypoint `memora-mcp cli index_repository '<json>'`
 receives its JSON argument through argv. main() used to take only the narrow
 `int main(int argc, char **argv)` (src/main.c), so on Windows the C runtime handed
 it argv in the active ANSI code page: a repo_path containing non-ASCII characters
@@ -23,7 +23,7 @@ argv path delivery was lossy.
 Exit code: 0 == honored (green), 1 == rejected/mangled (red), 2 == setup error.
 
 Usage:
-    python test_cli_non_ascii_arg.py <path-to-codebase-memory-mcp[.exe]>
+    python test_cli_non_ascii_arg.py <path-to-memora-mcp[.exe]>
 """
 import json
 import os
