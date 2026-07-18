@@ -1,4 +1,6 @@
 {
   "$schema": "https://glama.ai/mcp/schemas/server.json",
+  "name": "com.takaradasein/memora",
+  "description": "Servidor MCP experimental para indexación semántica de código con grafos de conocimiento",
   "maintainers": ["TakaraDasein"]
 }
