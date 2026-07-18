@@ -1,0 +1,13 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "com.takaradasein/memora",
+  "title": "Memora",
+  "description": "Graph of memory for AI agents \u2014 fork of codebase-memory-mcp.",
+  "repository": {
+    "url": "https://github.com/TakaraDasein/memora",
+    "source": "github"
+  },
+  "websiteUrl": "",
+  "version": "0.1.0",
+  "packages": []
+}
