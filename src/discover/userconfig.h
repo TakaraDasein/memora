@@ -2,8 +2,8 @@
  * userconfig.h — User-defined file extension → language mappings.
  *
  * Reads extra_extensions from two optional JSON config files:
- *   Global:  $XDG_CONFIG_HOME/memora-mcp/config.json
- *            (falls back to ~/.config/memora-mcp/config.json)
+ *   Global:  $XDG_CONFIG_HOME/memora/config.json
+ *            (falls back to ~/.config/memora/config.json)
  *   Project: {repo_root}/.codebase-memory.json
  *
  * Project config wins over global. Unknown language values warn and are

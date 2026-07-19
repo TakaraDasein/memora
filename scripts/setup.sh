@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# memora-mcp setup script (macOS + Linux)
+# memora setup script (macOS + Linux)
 # Default: download pre-built binary from GitHub Release
 # --from-source: build from source (requires Go + C compiler)
 
 REPO="TakaraDasein/memora"
 INSTALL_DIR="$HOME/.local/bin"
-BINARY_NAME="memora-mcp"
-SOURCE_DIR="$HOME/.local/share/memora-mcp"
+BINARY_NAME="memora"
+SOURCE_DIR="$HOME/.local/share/memora"
 CLEANUP_DIR=""  # set by download_binary for EXIT trap
 
 # --- Colors ---
@@ -157,7 +157,7 @@ download_binary() {
     fi
     ok "Latest release: $tag"
 
-    local asset="memora-mcp-${platform}.tar.gz"
+    local asset="memora-${platform}.tar.gz"
     local url="https://github.com/${REPO}/releases/download/${tag}/${asset}"
 
     echo "${BOLD}Downloading ${asset}...${RESET}"
@@ -199,7 +199,7 @@ build_from_source() {
     echo "${BOLD}Building binary (this may take a minute)...${RESET}"
     mkdir -p "$INSTALL_DIR"
 
-    (cd "$SOURCE_DIR" && scripts/build.sh && cp build/c/memora-mcp "${INSTALL_DIR}/${BINARY_NAME}")
+    (cd "$SOURCE_DIR" && scripts/build.sh && cp build/c/memora "${INSTALL_DIR}/${BINARY_NAME}")
 
     ok "Built and installed to ${INSTALL_DIR}/${BINARY_NAME}"
 }
@@ -212,7 +212,7 @@ configure_claude() {
     local claude_config_dir="${CLAUDE_CONFIG_DIR:-$HOME/.claude}"
     local settings_file="${claude_config_dir}/settings.json"
 
-    printf "%s" "${BOLD}Configure Claude Code to use memora-mcp? [y/N] ${RESET}"
+    printf "%s" "${BOLD}Configure Claude Code to use memora? [y/N] ${RESET}"
     read -r answer
     if [[ ! "$answer" =~ ^[Yy]$ ]]; then
         echo ""
@@ -220,7 +220,7 @@ configure_claude() {
         echo ""
         echo '  {'
         echo '    "mcpServers": {'
-        echo '      "memora-mcp": {'
+        echo '      "memora": {'
         echo '        "type": "stdio",'
         echo "        \"command\": \"${binary_path}\""
         echo '      }'
@@ -242,10 +242,10 @@ JSONEOF
         if [ -f "$settings_file" ]; then
             local tmp
             tmp=$(mktemp)
-            jq --argjson entry "$mcp_entry" '.mcpServers["memora-mcp"] = $entry' "$settings_file" > "$tmp"
+            jq --argjson entry "$mcp_entry" '.mcpServers["memora"] = $entry' "$settings_file" > "$tmp"
             mv "$tmp" "$settings_file"
         else
-            echo "{}" | jq --argjson entry "$mcp_entry" '.mcpServers["memora-mcp"] = $entry' > "$settings_file"
+            echo "{}" | jq --argjson entry "$mcp_entry" '.mcpServers["memora"] = $entry' > "$settings_file"
         fi
         ok "Updated ${settings_file}"
     elif command -v python3 &>/dev/null; then
@@ -256,7 +256,7 @@ data = {}
 if os.path.exists(path):
     with open(path) as f:
         data = json.load(f)
-data.setdefault('mcpServers', {})['memora-mcp'] = json.loads('$mcp_entry')
+data.setdefault('mcpServers', {})['memora'] = json.loads('$mcp_entry')
 with open(path, 'w') as f:
     json.dump(data, f, indent=2)
 print()
@@ -268,7 +268,7 @@ print()
         info "Add this to ${settings_file} manually:"
         echo ""
         echo '  "mcpServers": {'
-        echo '    "memora-mcp": {'
+        echo '    "memora": {'
         echo '      "type": "stdio",'
         echo "      \"command\": \"${binary_path}\""
         echo '    }'
@@ -291,7 +291,7 @@ check_path() {
 # --- Main ---
 
 echo ""
-echo "${BOLD}memora-mcp installer${RESET}"
+echo "${BOLD}memora installer${RESET}"
 echo ""
 
 if [ "$FROM_SOURCE" = true ]; then
@@ -332,4 +332,4 @@ echo ""
 info "To uninstall:"
 info "  rm ${INSTALL_DIR}/${BINARY_NAME}"
 info "  rm -rf ${SOURCE_DIR}  # if built from source"
-info "  rm -rf ~/.cache/memora-mcp/  # graph database"
+info "  rm -rf ~/.cache/memora/  # graph database"

@@ -80,7 +80,7 @@ static cbm_store_t *lang_open_indexed(LangProj *lp) {
         if (!home) {
             home = "/tmp";
         }
-        snprintf(cache_dir, sizeof(cache_dir), "%s/.cache/memora-mcp", home);
+        snprintf(cache_dir, sizeof(cache_dir), "%s/.cache/memora", home);
     }
     cbm_mkdir_p(cache_dir, 0755);
     snprintf(lp->dbpath, sizeof(lp->dbpath), "%s/%s.db", cache_dir, lp->project);

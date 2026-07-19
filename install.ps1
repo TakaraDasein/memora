@@ -1,4 +1,4 @@
-# install.ps1 — One-line installer for memora-mcp (Windows).
+# install.ps1 — One-line installer for memora (Windows).
 #
 # Usage: see README.md for install instructions.
 #
@@ -11,8 +11,8 @@ $ErrorActionPreference = "Stop"
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12 -bor [Net.SecurityProtocolType]::Tls13
 
 $Repo = "TakaraDasein/memora"
-$InstallDir = "$env:LOCALAPPDATA\Programs\memora-mcp"
-$BinName = "memora-mcp.exe"
+$InstallDir = "$env:LOCALAPPDATA\Programs\memora"
+$BinName = "memora.exe"
 $BaseUrl = if ($env:CBM_DOWNLOAD_URL) { $env:CBM_DOWNLOAD_URL } else { "https://github.com/$Repo/releases/latest/download" }
 
 # Security: reject non-HTTPS download URLs (defense-in-depth)
@@ -53,7 +53,7 @@ if ($env:CBM_ARCH) {
     }
 }
 
-Write-Host "memora-mcp installer (Windows)"
+Write-Host "memora installer (Windows)"
 Write-Host "  variant: $Variant"
 Write-Host "  arch:    $Arch"
 Write-Host "  target:  $InstallDir\$BinName"
@@ -61,9 +61,9 @@ Write-Host ""
 
 # Build download URL
 if ($Variant -eq "ui") {
-    $Archive = "memora-mcp-ui-windows-$Arch.zip"
+    $Archive = "memora-ui-windows-$Arch.zip"
 } else {
-    $Archive = "memora-mcp-windows-$Arch.zip"
+    $Archive = "memora-windows-$Arch.zip"
 }
 $Url = "$BaseUrl/$Archive"
 
@@ -109,7 +109,7 @@ Expand-Archive -Path "$TmpDir\$Archive" -DestinationPath $TmpDir -Force
 $DlBin = Join-Path $TmpDir $BinName
 if (-not (Test-Path $DlBin)) {
     # UI variant may have different name in zip
-    $UiBin = Join-Path $TmpDir "memora-mcp-ui.exe"
+    $UiBin = Join-Path $TmpDir "memora-ui.exe"
     if (Test-Path $UiBin) {
         Rename-Item $UiBin $BinName
         $DlBin = Join-Path $TmpDir $BinName
@@ -176,4 +176,4 @@ if ($UserPath -notlike "*$InstallDir*") {
 Remove-Item -Recurse -Force $TmpDir -ErrorAction SilentlyContinue
 
 Write-Host ""
-Write-Host "Done! Restart your terminal and coding agent to start using memora-mcp."
+Write-Host "Done! Restart your terminal and coding agent to start using memora."

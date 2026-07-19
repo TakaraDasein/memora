@@ -11,7 +11,7 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-BINARY="${ROOT}/build/c/memora-mcp"
+BINARY="${ROOT}/build/c/memora"
 
 case "$(uname -s)" in
   MINGW*|MSYS*|CYGWIN*)
@@ -109,6 +109,6 @@ while (( SECONDS < deadline )); do
   sleep 0.2
 done
 
-echo "memora-mcp child ${child_pid} survived parent death" >&2
+echo "memora child ${child_pid} survived parent death" >&2
 [[ -s "${tmpdir}/child.err" ]] && cat "${tmpdir}/child.err" >&2
 exit 1

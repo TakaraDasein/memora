@@ -1,4 +1,4 @@
-# Binding ownership policy for memora-mcp.
+# Binding ownership policy for memora.
 #
 # This repository is user-owned, so ownership is expressed with individual
 # GitHub handles rather than organization teams.
@@ -9,53 +9,53 @@
 # approval for the matching path.
 
 # Default owner gate: every pull request crosses the project owner's desk.
-* @DeusData
+* @TakaraDasein
 
 # Security-sensitive and authority-sensitive surfaces.
-/.github/ @DeusData
-/scripts/ @DeusData
-/Makefile.cbm @DeusData
-/SECURITY.md @DeusData
-/docs/SECURITY-DISCLOSURE.md @DeusData
-/CONTRIBUTING.md @DeusData
-/CODE_OF_CONDUCT.md @DeusData
-/DCO @DeusData
-/LICENSE @DeusData
-/MAINTAINERS.md @DeusData
+/.github/ @TakaraDasein
+/scripts/ @TakaraDasein
+/Makefile.cbm @TakaraDasein
+/SECURITY.md @TakaraDasein
+/docs/SECURITY-DISCLOSURE.md @TakaraDasein
+/CONTRIBUTING.md @TakaraDasein
+/CODE_OF_CONDUCT.md @TakaraDasein
+/DCO @TakaraDasein
+/LICENSE @TakaraDasein
+/MAINTAINERS.md @TakaraDasein
 
 # Release and distribution surfaces.
-/pkg/ @DeusData
-/install.sh @DeusData
-/install.ps1 @DeusData
-/server.json @DeusData
-/glama.json @DeusData
-/flake.nix @DeusData
-/flake.lock @DeusData
-/THIRD_PARTY.md @DeusData
-/vendored/ @DeusData
-/internal/cbm/vendored/ @DeusData
+/pkg/ @TakaraDasein
+/install.sh @TakaraDasein
+/install.ps1 @TakaraDasein
+/server.json @TakaraDasein
+/glama.json @TakaraDasein
+/flake.nix @TakaraDasein
+/flake.lock @TakaraDasein
+/THIRD_PARTY.md @TakaraDasein
+/vendored/ @TakaraDasein
+/internal/cbm/vendored/ @TakaraDasein
 
 # Core product surfaces.
-/src/foundation/ @DeusData
-/src/store/ @DeusData
-/src/cypher/ @DeusData
-/src/graph_buffer/ @DeusData
-/src/mcp/ @DeusData
-/src/cli/ @DeusData
-/src/discover/ @DeusData
-/src/watcher/ @DeusData
-/src/pipeline/ @DeusData
-/src/git/ @DeusData
-/src/semantic/ @DeusData
-/src/simhash/ @DeusData
-/src/traces/ @DeusData
-/src/ui/ @DeusData
+/src/foundation/ @TakaraDasein
+/src/store/ @TakaraDasein
+/src/cypher/ @TakaraDasein
+/src/graph_buffer/ @TakaraDasein
+/src/mcp/ @TakaraDasein
+/src/cli/ @TakaraDasein
+/src/discover/ @TakaraDasein
+/src/watcher/ @TakaraDasein
+/src/pipeline/ @TakaraDasein
+/src/git/ @TakaraDasein
+/src/semantic/ @TakaraDasein
+/src/simhash/ @TakaraDasein
+/src/traces/ @TakaraDasein
+/src/ui/ @TakaraDasein
 
 # Extraction, language support, and graph UI.
-/internal/cbm/ @DeusData
-/tools/ @DeusData
-/graph-ui/ @DeusData
+/internal/cbm/ @TakaraDasein
+/tools/ @TakaraDasein
+/graph-ui/ @TakaraDasein
 
 # Test and reproduction infrastructure.
-/tests/ @DeusData
-/test-infrastructure/ @DeusData
+/tests/ @TakaraDasein
+/test-infrastructure/ @TakaraDasein

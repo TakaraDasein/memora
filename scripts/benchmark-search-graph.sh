@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 # benchmark-search-graph.sh — Time search_graph name_pattern= queries against a
-# memora-mcp binary to measure the regex / LIKE pre-filter performance.
+# memora binary to measure the regex / LIKE pre-filter performance.
 #
 # Usage:
 #   scripts/benchmark-search-graph.sh <binary-path> <project-name>
 #
 # Example:
-#   scripts/benchmark-search-graph.sh ./build/c/memora-mcp my-project
+#   scripts/benchmark-search-graph.sh ./build/c/memora my-project
 
 set -euo pipefail
 

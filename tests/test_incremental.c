@@ -236,10 +236,10 @@ static int incremental_setup(void) {
     const char *home = getenv("HOME");
     if (!home)
         home = "/tmp";
-    snprintf(g_dbpath, sizeof(g_dbpath), "%s/.cache/memora-mcp/%s.db", home, g_project);
+    snprintf(g_dbpath, sizeof(g_dbpath), "%s/.cache/memora/%s.db", home, g_project);
 
     char cache_dir[512];
-    snprintf(cache_dir, sizeof(cache_dir), "%s/.cache/memora-mcp", home);
+    snprintf(cache_dir, sizeof(cache_dir), "%s/.cache/memora", home);
     cbm_mkdir(cache_dir);
 
     unlink(g_dbpath);

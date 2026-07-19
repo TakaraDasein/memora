@@ -450,6 +450,6 @@ const char *cbm_resolve_cache_dir(void) {
     if (!home) {
         return NULL;
     }
-    snprintf(buf, sizeof(buf), "%s/.cache/memora-mcp", home);
+    snprintf(buf, sizeof(buf), "%s/.cache/memora", home);
     return buf;
 }

@@ -128,7 +128,7 @@ TEST(repro_issue570_no_dual_hook_write) {
         FAIL("failed to create hooks.json");
 
     /* Build the dry-run install plan -- no files are mutated. */
-    char *json = cbm_build_install_plan_json(home, "/usr/local/bin/memora-mcp");
+    char *json = cbm_build_install_plan_json(home, "/usr/local/bin/memora");
     ASSERT_NOT_NULL(json);
 
     /* Sanity: plan must be valid and detect Codex. */

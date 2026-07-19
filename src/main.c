@@ -1,5 +1,5 @@
 /*
- * main.c — Entry point for memora-mcp.
+ * main.c — Entry point for memora.
  *
  * Modes:
  *   (default)       Run as MCP server on stdin/stdout (JSON-RPC 2.0)
@@ -207,7 +207,7 @@ static int watcher_index_fn(const char *project_name, const char *root_path, voi
 
 /* ── CLI mode ───────────────────────────────────────────────────── */
 
-#define CLI_USAGE "Usage: memora-mcp cli [--progress] [--json] <tool_name> [json_args]\n"
+#define CLI_USAGE "Usage: memora cli [--progress] [--json] <tool_name> [json_args]\n"
 
 /* Extract text content from MCP tool result envelope and print it.
  * MCP results: {"content":[{"type":"text","text":"..."}],"isError":...}
@@ -506,16 +506,16 @@ static int run_cli(int argc, char **argv) {
 /* ── Help ───────────────────────────────────────────────────────── */
 
 static void print_help(void) {
-    printf("memora-mcp %s\n\n", CBM_VERSION);
+    printf("memora %s\n\n", CBM_VERSION);
     printf("Usage:\n");
-    printf("  memora-mcp              Run MCP server on stdio\n");
-    printf("  memora-mcp cli <tool> [json]  Run a single tool\n");
-    printf("  memora-mcp install [-y|-n] [--force] [--dry-run]\n");
-    printf("  memora-mcp uninstall [-y|-n] [--dry-run]\n");
-    printf("  memora-mcp update [-y|-n]\n");
-    printf("  memora-mcp config <list|get|set|reset>\n");
-    printf("  memora-mcp --version    Print version\n");
-    printf("  memora-mcp --help       Print this help\n");
+    printf("  memora                           Run MCP server on stdio\n");
+    printf("  memora cli <tool> [json]         Run a single tool\n");
+    printf("  memora install [-y|-n] [--force] [--dry-run]\n");
+    printf("  memora uninstall [-y|-n] [--dry-run]\n");
+    printf("  memora update [-y|-n]\n");
+    printf("  memora config <list|get|set|reset>\n");
+    printf("  memora --version                 Print version\n");
+    printf("  memora --help                    Print this help\n");
     printf("\nUI options:\n");
     printf("  --ui=true    Enable HTTP graph visualization (persisted)\n");
     printf("  --ui=false   Disable HTTP graph visualization (persisted)\n");
@@ -555,7 +555,7 @@ static int handle_subcommand(int argc, char **argv) {
     }
     for (int i = SKIP_ONE; i < argc; i++) {
         if (strcmp(argv[i], "--version") == 0) {
-            printf("memora-mcp %s\n", CBM_VERSION);
+            printf("memora %s\n", CBM_VERSION);
             return 0;
         }
         if (strcmp(argv[i], "--help") == 0 || strcmp(argv[i], "-h") == 0) {
@@ -705,7 +705,7 @@ int main(int argc, char **argv) {
     }
     cbm_mcp_tool_profile_t tool_profile = CBM_MCP_TOOL_PROFILE_ALL;
     if (cbm_mcp_parse_tool_profile_args(argc, (const char *const *)argv, &tool_profile) != 0) {
-        (void)fprintf(stderr, "memora-mcp: --tool-profile requires the supported value "
+        (void)fprintf(stderr, "memora: --tool-profile requires the supported value "
                               "'analysis' or 'scout'\n");
         return 2;
     }
@@ -755,10 +755,9 @@ int main(int argc, char **argv) {
      * and which build to use (#350). */
     if (explicit_ui_enable && CBM_EMBEDDED_FILE_COUNT == 0) {
         (void)fprintf(stderr,
-                      "memora-mcp: --ui requested, but this binary was built without the "
+                      "memora: --ui requested, but this binary was built without the "
                       "embedded UI, so the HTTP server will not start.\n"
-                      "Use the UI release asset (memora-mcp-ui) or rebuild with: "
-                      "make -f Makefile.cbm cbm-with-ui\n");
+                      "Rebuild with: make -f Makefile.cbm cbm-with-ui\n");
     }
 
     setup_signal_handlers();

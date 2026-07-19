@@ -52,7 +52,7 @@ find "$HOME" -type f > "$TMPDIR/created_files.txt" 2>/dev/null || true
 #   .claude/settings.json
 #   .continue/config.yaml
 #   .codeium/config.json
-#   .local/bin/memora-mcp
+#   .local/bin/memora
 #   Various agent config dirs
 
 EXPECTED_PATTERNS=(

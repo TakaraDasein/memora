@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# install.sh — One-line installer for memora-mcp.
+# install.sh — One-line installer for memora.
 #
 # Usage:
 #   curl -fsSL https://raw.githubusercontent.com/TakaraDasein/memora/main/install.sh | bash
@@ -83,11 +83,11 @@ detect_arch() {
 OS=$(detect_os)
 ARCH=$(detect_arch)
 
-echo "memora-mcp installer"
+echo "memora installer"
 echo "  os:      $OS"
 echo "  arch:    $ARCH"
 echo "  variant: $VARIANT"
-echo "  target:  $INSTALL_DIR/memora-mcp"
+echo "  target:  $INSTALL_DIR/memora"
 echo ""
 
 # Build download URL
@@ -104,9 +104,9 @@ PORTABLE=""
 [ "$OS" = "linux" ] && PORTABLE="-portable"
 
 if [ "$VARIANT" = "ui" ]; then
-    ARCHIVE="memora-mcp-ui-${OS}-${ARCH}${PORTABLE}.${EXT}"
+    ARCHIVE="memora-ui-${OS}-${ARCH}${PORTABLE}.${EXT}"
 else
-    ARCHIVE="memora-mcp-${OS}-${ARCH}${PORTABLE}.${EXT}"
+    ARCHIVE="memora-${OS}-${ARCH}${PORTABLE}.${EXT}"
 fi
 
 URL="${CBM_DOWNLOAD_URL}/${ARCHIVE}"
@@ -157,7 +157,7 @@ else
     tar -xzf "$ARCHIVE"
 fi
 
-DLBIN="$DLDIR/memora-mcp"
+DLBIN="$DLDIR/memora"
 if [ ! -f "$DLBIN" ]; then
     echo "error: binary not found after extraction" >&2
     exit 1
@@ -172,7 +172,7 @@ fi
 
 # Install
 mkdir -p "$INSTALL_DIR"
-DEST="$INSTALL_DIR/memora-mcp"
+DEST="$INSTALL_DIR/memora"
 if [ -f "$DEST" ]; then
     rm -f "$DEST"
 fi
@@ -199,7 +199,7 @@ else
     "$DEST" install -y 2>&1 || {
         echo ""
         echo "Agent configuration failed (non-fatal)."
-        echo "Run manually: memora-mcp install"
+        echo "Run manually: memora install"
     }
 fi
 
@@ -213,7 +213,7 @@ if ! echo "$PATH" | tr ':' '\n' | grep -qx "$INSTALL_DIR"; then
 fi
 
 echo ""
-echo "Done! Restart your coding agent to start using memora-mcp."
+echo "Done! Restart your coding agent to start using memora."
 
 } # end main()
 

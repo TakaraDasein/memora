@@ -1,5 +1,5 @@
 {
-  description = "memora — Servidor MCP experimental para indexación semántica de código con grafos de conocimiento";
+  description = "memora — C11 MCP server for codebase indexing";
 
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
@@ -11,7 +11,7 @@
     {
       packages = forAllSystems (pkgs: {
         default = pkgs.stdenv.mkDerivation {
-          pname = "memora-mcp";
+          pname = "memora";
           version = "0.6.0";
 
           src = ./.;
@@ -28,14 +28,14 @@
           '';
 
           installPhase = ''
-            install -Dm755 build/c/memora-mcp $out/bin/memora-mcp
+            install -Dm755 build/c/memora $out/bin/memora
           '';
 
           meta = {
-            description = "Servidor MCP experimental para indexación semántica de código con grafos de conocimiento";
+            description = "MCP server that builds and queries a semantic graph of your codebase";
             homepage = "https://github.com/TakaraDasein/memora";
             license = nixpkgs.lib.licenses.mit;
-            mainProgram = "memora-mcp";
+            mainProgram = "memora";
             platforms = systems;
           };
         };

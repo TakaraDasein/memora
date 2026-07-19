@@ -117,9 +117,9 @@ static bool yaml_lock_released_state_is_safe(const char *path) {
 }
 
 static bool yaml_upsert_failed_unchanged(const char *path, const char *original) {
-    const char *block = "    command: memora-mcp\n";
+    const char *block = "    command: memora\n";
     if (th_write_file(path, original) != 0 ||
-        cbm_yaml_upsert_mapping_entry(path, "mcp_servers", "memora-mcp", block) == 0) {
+        cbm_yaml_upsert_mapping_entry(path, "mcp_servers", "codebase-memory", block) == 0) {
         return false;
     }
     char *after = yaml_read_alloc(path);
@@ -236,7 +236,7 @@ TEST(config_yaml_edit_missing_target_appearance_fails_without_replace) {
 TEST(config_yaml_edit_rejects_stale_content_and_cleans_temp) {
     const char *original = "model: fast\n";
     const char *concurrent = "model: concurrent\n";
-    const char *block = "    command: memora-mcp\n";
+    const char *block = "    command: memora\n";
     yaml_fixture_t fixture;
     ASSERT_EQ(yaml_fixture_init(&fixture, original), 0);
     yaml_precommit_change_t change = {
@@ -248,7 +248,7 @@ TEST(config_yaml_edit_rejects_stale_content_and_cleans_temp) {
 
     cbm_yaml_set_precommit_hook_for_testing(yaml_change_before_commit, &change);
     int result =
-        cbm_yaml_upsert_mapping_entry(fixture.path, "mcp_servers", "memora-mcp", block);
+        cbm_yaml_upsert_mapping_entry(fixture.path, "mcp_servers", "codebase-memory", block);
     cbm_yaml_set_precommit_hook_for_testing(NULL, NULL);
 
     ASSERT_EQ(change.result, 0);
@@ -264,7 +264,7 @@ TEST(config_yaml_edit_rejects_stale_content_and_cleans_temp) {
 
 TEST(config_yaml_edit_rejects_stale_identity_with_same_content) {
     const char *original = "model: fast\n";
-    const char *block = "    command: memora-mcp\n";
+    const char *block = "    command: memora\n";
     yaml_fixture_t fixture;
     ASSERT_EQ(yaml_fixture_init(&fixture, original), 0);
     char backup[sizeof(fixture.path) + 32U];
@@ -278,7 +278,7 @@ TEST(config_yaml_edit_rejects_stale_identity_with_same_content) {
 
     cbm_yaml_set_precommit_hook_for_testing(yaml_change_before_commit, &change);
     int result =
-        cbm_yaml_upsert_mapping_entry(fixture.path, "mcp_servers", "memora-mcp", block);
+        cbm_yaml_upsert_mapping_entry(fixture.path, "mcp_servers", "codebase-memory", block);
     cbm_yaml_set_precommit_hook_for_testing(NULL, NULL);
 
     ASSERT_EQ(change.result, 0);
@@ -296,7 +296,7 @@ TEST(config_yaml_edit_rejects_stale_identity_with_same_content) {
 TEST(config_yaml_edit_existing_target_swap_after_check_preserves_winner) {
     const char *original = "model: fast\n";
     const char *winner = "model: winner\n";
-    const char *block = "    command: memora-mcp\n";
+    const char *block = "    command: memora\n";
     yaml_fixture_t fixture;
     ASSERT_EQ(yaml_fixture_init(&fixture, original), 0);
     char backup[sizeof(fixture.path) + 32U];
@@ -310,7 +310,7 @@ TEST(config_yaml_edit_existing_target_swap_after_check_preserves_winner) {
 
     cbm_yaml_set_prepublish_hook_for_testing(yaml_change_before_commit, &race);
     int result =
-        cbm_yaml_upsert_mapping_entry(fixture.path, "mcp_servers", "memora-mcp", block);
+        cbm_yaml_upsert_mapping_entry(fixture.path, "mcp_servers", "codebase-memory", block);
     cbm_yaml_set_prepublish_hook_for_testing(NULL, NULL);
 
     ASSERT_EQ(race.result, 0);
@@ -604,13 +604,13 @@ TEST(config_yaml_edit_absent_target_requires_safe_root_mapping) {
 
     yaml_fixture_t safe;
     ASSERT_EQ(yaml_fixture_init(&safe, "model:\n  fallbacks:\n    - local\n"), 0);
-    ASSERT_EQ(cbm_yaml_upsert_mapping_entry(safe.path, "mcp_servers", "memora-mcp",
-                                            "    command: memora-mcp\n"),
+    ASSERT_EQ(cbm_yaml_upsert_mapping_entry(safe.path, "mcp_servers", "codebase-memory",
+                                            "    command: memora\n"),
               0);
     char *after = yaml_read_alloc(safe.path);
     ASSERT_NOT_NULL(after);
     ASSERT_NOT_NULL(strstr(after, "model:\n  fallbacks:\n    - local\n"));
-    ASSERT_NOT_NULL(strstr(after, "mcp_servers:\n  memora-mcp:\n"));
+    ASSERT_NOT_NULL(strstr(after, "mcp_servers:\n  codebase-memory:\n"));
     free(after);
     th_cleanup(safe.dir);
     PASS();
@@ -622,11 +622,11 @@ TEST(config_yaml_edit_rejects_semantic_target_key_aliases) {
         "mcp_servers:\n  \"codebase\\x2dmemory\":\n    command: other\n",
         "\"r\\x65ad\":\n  - docs.md\n",
     };
-    const char *block = "    command: memora-mcp\n";
+    const char *block = "    command: memora\n";
 
     yaml_fixture_t section;
     ASSERT_EQ(yaml_fixture_init(&section, cases[0]), 0);
-    ASSERT_EQ(cbm_yaml_upsert_mapping_entry(section.path, "mcp_servers", "memora-mcp", block),
+    ASSERT_EQ(cbm_yaml_upsert_mapping_entry(section.path, "mcp_servers", "codebase-memory", block),
               -1);
     char *after = yaml_read_alloc(section.path);
     ASSERT_NOT_NULL(after);
@@ -636,7 +636,7 @@ TEST(config_yaml_edit_rejects_semantic_target_key_aliases) {
 
     yaml_fixture_t entry;
     ASSERT_EQ(yaml_fixture_init(&entry, cases[1]), 0);
-    ASSERT_EQ(cbm_yaml_upsert_mapping_entry(entry.path, "mcp_servers", "memora-mcp", block),
+    ASSERT_EQ(cbm_yaml_upsert_mapping_entry(entry.path, "mcp_servers", "codebase-memory", block),
               -1);
     after = yaml_read_alloc(entry.path);
     ASSERT_NOT_NULL(after);
@@ -656,30 +656,30 @@ TEST(config_yaml_edit_rejects_semantic_target_key_aliases) {
 }
 
 TEST(config_yaml_edit_preserves_crlf_and_handles_no_final_newline) {
-    const char *block = "    command: memora-mcp\n";
+    const char *block = "    command: memora\n";
     yaml_fixture_t crlf;
     ASSERT_EQ(yaml_fixture_init(&crlf, "model: fast\r\n"), 0);
-    ASSERT_EQ(cbm_yaml_upsert_mapping_entry(crlf.path, "mcp_servers", "memora-mcp", block), 0);
+    ASSERT_EQ(cbm_yaml_upsert_mapping_entry(crlf.path, "mcp_servers", "codebase-memory", block), 0);
     char *after = yaml_read_alloc(crlf.path);
     ASSERT_NOT_NULL(after);
     ASSERT_STR_EQ(after, "model: fast\r\n"
                          "mcp_servers:\r\n"
-                         "  memora-mcp:\r\n"
-                         "    command: memora-mcp\r\n");
+                         "  codebase-memory:\r\n"
+                         "    command: memora\r\n");
     free(after);
     th_cleanup(crlf.dir);
 
     yaml_fixture_t no_final_newline;
     ASSERT_EQ(yaml_fixture_init(&no_final_newline, "model: fast"), 0);
-    ASSERT_EQ(cbm_yaml_upsert_mapping_entry(no_final_newline.path, "mcp_servers", "memora-mcp",
+    ASSERT_EQ(cbm_yaml_upsert_mapping_entry(no_final_newline.path, "mcp_servers", "codebase-memory",
                                             block),
               0);
     after = yaml_read_alloc(no_final_newline.path);
     ASSERT_NOT_NULL(after);
     ASSERT_STR_EQ(after, "model: fast\n"
                          "mcp_servers:\n"
-                         "  memora-mcp:\n"
-                         "    command: memora-mcp\n");
+                         "  codebase-memory:\n"
+                         "    command: memora\n");
     free(after);
     th_cleanup(no_final_newline.dir);
     PASS();
@@ -693,44 +693,44 @@ TEST(config_yaml_edit_hermes_mapping_lifecycle) {
                           "  other:\n"
                           "    command: other-mcp\n"
                           "theme: dark\n";
-    const char *first_block = "    command: memora-mcp\n"
+    const char *first_block = "    command: memora\n"
                               "    args: [\"--stdio\"]\n";
-    const char *replacement_block = "    command: /opt/memora-mcp\n"
+    const char *replacement_block = "    command: /opt/memora\n"
                                     "    args: [\"--stdio\"]\n";
     yaml_fixture_t fixture;
     ASSERT_EQ(yaml_fixture_init(&fixture, initial), 0);
 
     ASSERT_EQ(
-        cbm_yaml_upsert_mapping_entry(fixture.path, "mcp_servers", "memora-mcp", first_block),
+        cbm_yaml_upsert_mapping_entry(fixture.path, "mcp_servers", "codebase-memory", first_block),
         0);
     char *installed = yaml_read_alloc(fixture.path);
     ASSERT_NOT_NULL(installed);
     ASSERT_NOT_NULL(strstr(installed, "# Hermes settings\n"));
     ASSERT_NOT_NULL(strstr(installed, "  # preserve sibling\n"));
     ASSERT_NOT_NULL(strstr(installed, "  other:\n    command: other-mcp\n"));
-    ASSERT_NOT_NULL(strstr(installed, "  memora-mcp:\n"
-                                      "    command: memora-mcp\n"
+    ASSERT_NOT_NULL(strstr(installed, "  codebase-memory:\n"
+                                      "    command: memora\n"
                                       "    args: [\"--stdio\"]\n"));
     ASSERT_NOT_NULL(strstr(installed, "theme: dark\n"));
-    ASSERT_EQ(yaml_count_occurrences(installed, "  memora-mcp:\n"), 1);
+    ASSERT_EQ(yaml_count_occurrences(installed, "  codebase-memory:\n"), 1);
 
     ASSERT_EQ(
-        cbm_yaml_upsert_mapping_entry(fixture.path, "mcp_servers", "memora-mcp", first_block),
+        cbm_yaml_upsert_mapping_entry(fixture.path, "mcp_servers", "codebase-memory", first_block),
         0);
     char *idempotent = yaml_read_alloc(fixture.path);
     ASSERT_NOT_NULL(idempotent);
     ASSERT_STR_EQ(idempotent, installed);
 
-    ASSERT_EQ(cbm_yaml_upsert_mapping_entry(fixture.path, "mcp_servers", "memora-mcp",
+    ASSERT_EQ(cbm_yaml_upsert_mapping_entry(fixture.path, "mcp_servers", "codebase-memory",
                                             replacement_block),
               0);
     char *replaced = yaml_read_alloc(fixture.path);
     ASSERT_NOT_NULL(replaced);
-    ASSERT_NOT_NULL(strstr(replaced, "    command: /opt/memora-mcp\n"));
-    ASSERT_NULL(strstr(replaced, "    command: memora-mcp\n"));
+    ASSERT_NOT_NULL(strstr(replaced, "    command: /opt/memora\n"));
+    ASSERT_NULL(strstr(replaced, "    command: memora\n"));
     ASSERT_NOT_NULL(strstr(replaced, "  other:\n    command: other-mcp\n"));
 
-    ASSERT_EQ(cbm_yaml_remove_mapping_entry(fixture.path, "mcp_servers", "memora-mcp"), 0);
+    ASSERT_EQ(cbm_yaml_remove_mapping_entry(fixture.path, "mcp_servers", "codebase-memory"), 0);
     char *removed = yaml_read_alloc(fixture.path);
     ASSERT_NOT_NULL(removed);
     ASSERT_STR_EQ(removed, initial);
@@ -744,26 +744,26 @@ TEST(config_yaml_edit_hermes_mapping_lifecycle) {
 }
 
 TEST(config_yaml_edit_hermes_creates_missing_section) {
-    const char *block = "    command: memora-mcp\n"
+    const char *block = "    command: memora\n"
                         "    args: [\"--stdio\"]\n";
     yaml_fixture_t fixture;
     ASSERT_EQ(yaml_fixture_init(&fixture, NULL), 0);
 
-    ASSERT_EQ(cbm_yaml_upsert_mapping_entry(fixture.path, "mcp_servers", "memora-mcp", block),
+    ASSERT_EQ(cbm_yaml_upsert_mapping_entry(fixture.path, "mcp_servers", "codebase-memory", block),
               0);
     char *installed = yaml_read_alloc(fixture.path);
     ASSERT_NOT_NULL(installed);
     ASSERT_STR_EQ(installed, "mcp_servers:\n"
-                             "  memora-mcp:\n"
-                             "    command: memora-mcp\n"
+                             "  codebase-memory:\n"
+                             "    command: memora\n"
                              "    args: [\"--stdio\"]\n");
 
-    ASSERT_EQ(cbm_yaml_remove_mapping_entry(fixture.path, "mcp_servers", "memora-mcp"), 0);
+    ASSERT_EQ(cbm_yaml_remove_mapping_entry(fixture.path, "mcp_servers", "codebase-memory"), 0);
     char *empty = yaml_read_alloc(fixture.path);
     ASSERT_NOT_NULL(empty);
     ASSERT_STR_EQ(empty, "mcp_servers: {}\n");
 
-    ASSERT_EQ(cbm_yaml_upsert_mapping_entry(fixture.path, "mcp_servers", "memora-mcp", block),
+    ASSERT_EQ(cbm_yaml_upsert_mapping_entry(fixture.path, "mcp_servers", "codebase-memory", block),
               0);
     char *reinstalled = yaml_read_alloc(fixture.path);
     ASSERT_NOT_NULL(reinstalled);
@@ -784,24 +784,24 @@ TEST(config_yaml_edit_goose_extensions_preserve_siblings) {
                           "    enabled: false\n"
                           "ui: compact\n";
     const char *block = "    type: stdio\n"
-                        "    cmd: memora-mcp\n"
+                        "    cmd: memora\n"
                         "    args: []\n";
     yaml_fixture_t fixture;
     ASSERT_EQ(yaml_fixture_init(&fixture, initial), 0);
 
-    ASSERT_EQ(cbm_yaml_upsert_mapping_entry(fixture.path, "extensions", "memora-mcp", block),
+    ASSERT_EQ(cbm_yaml_upsert_mapping_entry(fixture.path, "extensions", "codebase-memory", block),
               0);
     char *installed = yaml_read_alloc(fixture.path);
     ASSERT_NOT_NULL(installed);
     ASSERT_NOT_NULL(strstr(installed, "  shell:\n    type: builtin\n"));
     ASSERT_NOT_NULL(strstr(installed, "  telemetry:\n    enabled: false\n"));
-    ASSERT_NOT_NULL(strstr(installed, "  memora-mcp:\n"
+    ASSERT_NOT_NULL(strstr(installed, "  codebase-memory:\n"
                                       "    type: stdio\n"
-                                      "    cmd: memora-mcp\n"
+                                      "    cmd: memora\n"
                                       "    args: []\n"));
     ASSERT_NOT_NULL(strstr(installed, "ui: compact\n"));
 
-    ASSERT_EQ(cbm_yaml_remove_mapping_entry(fixture.path, "extensions", "memora-mcp"), 0);
+    ASSERT_EQ(cbm_yaml_remove_mapping_entry(fixture.path, "extensions", "codebase-memory"), 0);
     char *removed = yaml_read_alloc(fixture.path);
     ASSERT_NOT_NULL(removed);
     ASSERT_STR_EQ(removed, initial);
@@ -821,22 +821,22 @@ TEST(config_yaml_edit_owned_agent_mapping_installs_idempotently_and_removes_exac
     } cases[] = {
         {
             "mcp_servers",
-            "    command: \"/opt/memora-mcp\"\n",
+            "    command: \"/opt/memora\"\n",
             "mcp_servers:\n"
-            "  memora-mcp:\n"
-            "    command: \"/opt/memora-mcp\"\n",
+            "  memora:\n"
+            "    command: \"/opt/memora\"\n",
             "mcp_servers: {}\n",
         },
         {
             "extensions",
             "    type: stdio\n"
-            "    cmd: \"/opt/memora-mcp\"\n"
+            "    cmd: \"/opt/memora\"\n"
             "    args: []\n"
             "    enabled: true\n",
             "extensions:\n"
-            "  memora-mcp:\n"
+            "  memora:\n"
             "    type: stdio\n"
-            "    cmd: \"/opt/memora-mcp\"\n"
+            "    cmd: \"/opt/memora\"\n"
             "    args: []\n"
             "    enabled: true\n",
             "extensions: {}\n",
@@ -847,21 +847,21 @@ TEST(config_yaml_edit_owned_agent_mapping_installs_idempotently_and_removes_exac
         yaml_fixture_t fixture;
         ASSERT_EQ(yaml_fixture_init(&fixture, NULL), 0);
         ASSERT_EQ(cbm_yaml_upsert_owned_mapping_entry(fixture.path, cases[i].section,
-                                                      "memora-mcp", cases[i].canonical),
+                                                      "memora", cases[i].canonical),
                   CBM_YAML_IDENTITY_EDIT_OK);
         char *installed = yaml_read_alloc(fixture.path);
         ASSERT_NOT_NULL(installed);
         ASSERT_STR_EQ(installed, cases[i].installed);
 
         ASSERT_EQ(cbm_yaml_upsert_owned_mapping_entry(fixture.path, cases[i].section,
-                                                      "memora-mcp", cases[i].canonical),
+                                                      "memora", cases[i].canonical),
                   CBM_YAML_IDENTITY_EDIT_OK);
         char *idempotent = yaml_read_alloc(fixture.path);
         ASSERT_NOT_NULL(idempotent);
         ASSERT_STR_EQ(idempotent, installed);
 
         ASSERT_EQ(cbm_yaml_remove_owned_mapping_entry(fixture.path, cases[i].section,
-                                                      "memora-mcp", cases[i].canonical),
+                                                      "memora", cases[i].canonical),
                   CBM_YAML_IDENTITY_EDIT_OK);
         char *removed = yaml_read_alloc(fixture.path);
         ASSERT_NOT_NULL(removed);
@@ -883,27 +883,27 @@ TEST(config_yaml_edit_owned_agent_mapping_preserves_foreign_same_name_state) {
     } cases[] = {
         {
             "mcp_servers",
-            "    command: \"/opt/memora-mcp\"\n",
+            "    command: \"/opt/memora\"\n",
             "mcp_servers:\n"
-            "  memora-mcp:\n"
+            "  memora:\n"
             "    command: \"/opt/user-owned-mcp\"\n",
         },
         {
             "mcp_servers",
-            "    command: \"/opt/memora-mcp\"\n",
+            "    command: \"/opt/memora\"\n",
             "mcp_servers:\n"
-            "  memora-mcp:\n"
-            "    command: \"/opt/memora-mcp\"\n"
+            "  memora:\n"
+            "    command: \"/opt/memora\"\n"
             "    startup_timeout_sec: 45\n",
         },
         {
             "extensions",
             "    type: stdio\n"
-            "    cmd: \"/opt/memora-mcp\"\n"
+            "    cmd: \"/opt/memora\"\n"
             "    args: []\n"
             "    enabled: true\n",
             "extensions:\n"
-            "  memora-mcp:\n"
+            "  memora:\n"
             "    type: stdio\n"
             "    cmd: \"/opt/user-owned-mcp\"\n"
             "    args: [\"--custom\"]\n"
@@ -912,13 +912,13 @@ TEST(config_yaml_edit_owned_agent_mapping_preserves_foreign_same_name_state) {
         {
             "extensions",
             "    type: stdio\n"
-            "    cmd: \"/opt/memora-mcp\"\n"
+            "    cmd: \"/opt/memora\"\n"
             "    args: []\n"
             "    enabled: true\n",
             "extensions:\n"
-            "  memora-mcp:\n"
+            "  memora:\n"
             "    type: stdio\n"
-            "    cmd: \"/opt/memora-mcp\"\n"
+            "    cmd: \"/opt/memora\"\n"
             "    args: []\n"
             "    enabled: true\n"
             "    startup_timeout_sec: 45\n",
@@ -929,7 +929,7 @@ TEST(config_yaml_edit_owned_agent_mapping_preserves_foreign_same_name_state) {
         yaml_fixture_t fixture;
         ASSERT_EQ(yaml_fixture_init(&fixture, cases[i].foreign), 0);
         ASSERT_EQ(cbm_yaml_upsert_owned_mapping_entry(fixture.path, cases[i].section,
-                                                      "memora-mcp", cases[i].canonical),
+                                                      "memora", cases[i].canonical),
                   CBM_YAML_IDENTITY_EDIT_FOREIGN);
         char *after_upsert = yaml_read_alloc(fixture.path);
         ASSERT_NOT_NULL(after_upsert);
@@ -937,7 +937,7 @@ TEST(config_yaml_edit_owned_agent_mapping_preserves_foreign_same_name_state) {
         free(after_upsert);
 
         ASSERT_EQ(cbm_yaml_remove_owned_mapping_entry(fixture.path, cases[i].section,
-                                                      "memora-mcp", cases[i].canonical),
+                                                      "memora", cases[i].canonical),
                   CBM_YAML_IDENTITY_EDIT_FOREIGN);
         char *after_remove = yaml_read_alloc(fixture.path);
         ASSERT_NOT_NULL(after_remove);
@@ -993,13 +993,13 @@ TEST(config_yaml_edit_mapping_remove_first_middle_last) {
 TEST(config_yaml_edit_mapping_remove_last_preserves_section_comments) {
     const char *initial = "extensions: # preserve section comment\n"
                           "  # preserve user note\n"
-                          "  memora-mcp:\n"
+                          "  codebase-memory:\n"
                           "    type: stdio\n"
                           "mode: keep\n";
     yaml_fixture_t fixture;
     ASSERT_EQ(yaml_fixture_init(&fixture, initial), 0);
 
-    ASSERT_EQ(cbm_yaml_remove_mapping_entry(fixture.path, "extensions", "memora-mcp"), 0);
+    ASSERT_EQ(cbm_yaml_remove_mapping_entry(fixture.path, "extensions", "codebase-memory"), 0);
     char *after = yaml_read_alloc(fixture.path);
     ASSERT_NOT_NULL(after);
     ASSERT_STR_EQ(after, "extensions: {} # preserve section comment\n"
@@ -1013,7 +1013,7 @@ TEST(config_yaml_edit_mapping_remove_last_preserves_section_comments) {
 
 TEST(config_yaml_edit_mapping_entry_is_explicit_managed_boundary) {
     const char *initial = "mcp_servers:\n"
-                          "  memora-mcp:\n"
+                          "  codebase-memory:\n"
                           "    command: old-binary\n"
                           "    user_added_field: replaced-with-managed-entry\n"
                           "  user-server:\n"
@@ -1024,10 +1024,10 @@ TEST(config_yaml_edit_mapping_entry_is_explicit_managed_boundary) {
     ASSERT_EQ(yaml_fixture_init(&fixture, initial), 0);
 
     ASSERT_EQ(
-        cbm_yaml_upsert_mapping_entry(fixture.path, "mcp_servers", "memora-mcp", managed), 0);
+        cbm_yaml_upsert_mapping_entry(fixture.path, "mcp_servers", "codebase-memory", managed), 0);
     char *after = yaml_read_alloc(fixture.path);
     ASSERT_NOT_NULL(after);
-    ASSERT_NOT_NULL(strstr(after, "  memora-mcp:\n"
+    ASSERT_NOT_NULL(strstr(after, "  codebase-memory:\n"
                                   "    command: new-binary\n"
                                   "    args: []\n"));
     ASSERT_NULL(strstr(after, "user_added_field"));
@@ -1195,22 +1195,22 @@ TEST(config_yaml_edit_quotes_windows_path_safely) {
 TEST(config_yaml_edit_mapping_ambiguity_fails_unchanged) {
     const char *cases[] = {
         "mcp_servers:\n  one:\n    command: one\nmcp_servers:\n",
-        ("mcp_servers:\n  memora-mcp:\n    command: one\n"
-         "  memora-mcp:\n    command: two\n"),
-        "mcp_servers:\n   memora-mcp:\n    command: bad-indent\n",
-        "mcp_servers:\n\tmemora-mcp:\n\t\tcommand: tabbed\n",
+        ("mcp_servers:\n  codebase-memory:\n    command: one\n"
+         "  codebase-memory:\n    command: two\n"),
+        "mcp_servers:\n   codebase-memory:\n    command: bad-indent\n",
+        "mcp_servers:\n\tcodebase-memory:\n\t\tcommand: tabbed\n",
         "mcp_servers: &shared\n  other:\n    command: other\n",
         "mcp_servers:\n  <<: *defaults\n  other:\n    command: other\n",
-        "mcp_servers: {memora-mcp: {command: memora-mcp}}\n",
+        "mcp_servers: {codebase-memory: {command: memora}}\n",
         "mcp_servers:\n  other:\n    description: >\n      folded text\n",
     };
-    const char *block = "    command: memora-mcp\n";
+    const char *block = "    command: memora\n";
 
     for (size_t i = 0; i < sizeof(cases) / sizeof(cases[0]); i++) {
         yaml_fixture_t fixture;
         ASSERT_EQ(yaml_fixture_init(&fixture, cases[i]), 0);
         ASSERT_EQ(
-            cbm_yaml_upsert_mapping_entry(fixture.path, "mcp_servers", "memora-mcp", block),
+            cbm_yaml_upsert_mapping_entry(fixture.path, "mcp_servers", "codebase-memory", block),
             -1);
         char *after = yaml_read_alloc(fixture.path);
         ASSERT_NOT_NULL(after);
@@ -1222,7 +1222,7 @@ TEST(config_yaml_edit_mapping_ambiguity_fails_unchanged) {
     yaml_fixture_t invalid_block;
     const char *safe = "mcp_servers:\n  other:\n    command: other\n";
     ASSERT_EQ(yaml_fixture_init(&invalid_block, safe), 0);
-    ASSERT_EQ(cbm_yaml_upsert_mapping_entry(invalid_block.path, "mcp_servers", "memora-mcp",
+    ASSERT_EQ(cbm_yaml_upsert_mapping_entry(invalid_block.path, "mcp_servers", "codebase-memory",
                                             "    command: &shared\n"),
               -1);
     char *after_block = yaml_read_alloc(invalid_block.path);
@@ -1234,7 +1234,7 @@ TEST(config_yaml_edit_mapping_ambiguity_fails_unchanged) {
     yaml_fixture_t comment_truncation;
     ASSERT_EQ(yaml_fixture_init(&comment_truncation, safe), 0);
     ASSERT_EQ(cbm_yaml_upsert_mapping_entry(comment_truncation.path, "mcp_servers",
-                                            "memora-mcp",
+                                            "codebase-memory",
                                             "    command: /tmp/tool # truncated\n"),
               -1);
     char *after_comment = yaml_read_alloc(comment_truncation.path);
@@ -1245,7 +1245,7 @@ TEST(config_yaml_edit_mapping_ambiguity_fails_unchanged) {
 
     yaml_fixture_t quoted_hash;
     ASSERT_EQ(yaml_fixture_init(&quoted_hash, safe), 0);
-    ASSERT_EQ(cbm_yaml_upsert_mapping_entry(quoted_hash.path, "mcp_servers", "memora-mcp",
+    ASSERT_EQ(cbm_yaml_upsert_mapping_entry(quoted_hash.path, "mcp_servers", "codebase-memory",
                                             "    command: \"/tmp/tool # literal\"\n"),
               0);
     char *after_quoted = yaml_read_alloc(quoted_hash.path);
@@ -1283,8 +1283,8 @@ TEST(config_yaml_edit_list_ambiguity_fails_unchanged) {
 }
 
 static const char *const yaml_hook_sequence_path[] = {"hooks", "pre_llm_call"};
-static const char yaml_hook_identity[] = "\"memora-mcp\"";
-static const char yaml_hook_canonical_item[] = "- id: \"memora-mcp\"\n"
+static const char yaml_hook_identity[] = "\"memora\"";
+static const char yaml_hook_canonical_item[] = "- id: \"memora\"\n"
                                                "  type: \"command\"\n"
                                                "  command: \"/opt/Codebase Memory/bin/cbm\"\n";
 
@@ -1315,10 +1315,10 @@ TEST(config_yaml_edit_nested_sequence_preserves_siblings_comments_and_is_idempot
     ASSERT_NOT_NULL(strstr(installed, "  session_start:\n"));
     ASSERT_NOT_NULL(strstr(installed, "  post_llm_call:\n"));
     ASSERT_NOT_NULL(strstr(installed, "model: local\n"));
-    ASSERT_NOT_NULL(strstr(installed, "    - id: \"memora-mcp\"\n"
+    ASSERT_NOT_NULL(strstr(installed, "    - id: \"memora\"\n"
                                       "      type: \"command\"\n"
                                       "      command: \"/opt/Codebase Memory/bin/cbm\"\n"));
-    ASSERT_EQ(yaml_count_occurrences(installed, "id: \"memora-mcp\""), 1U);
+    ASSERT_EQ(yaml_count_occurrences(installed, "id: \"memora\""), 1U);
 
     ASSERT_EQ(cbm_yaml_upsert_mapping_sequence_item(fixture.path, yaml_hook_sequence_path, 2U, "id",
                                                     yaml_hook_identity, yaml_hook_canonical_item),
@@ -1349,8 +1349,8 @@ TEST(config_yaml_edit_nested_sequence_creates_missing_file_section_and_list) {
         ASSERT_NOT_NULL(installed);
         ASSERT_NOT_NULL(strstr(installed, "hooks:\n"));
         ASSERT_NOT_NULL(strstr(installed, "  pre_llm_call:\n"));
-        ASSERT_NOT_NULL(strstr(installed, "    - id: \"memora-mcp\"\n"));
-        ASSERT_EQ(yaml_count_occurrences(installed, "id: \"memora-mcp\""), 1U);
+        ASSERT_NOT_NULL(strstr(installed, "    - id: \"memora\"\n"));
+        ASSERT_EQ(yaml_count_occurrences(installed, "id: \"memora\""), 1U);
         if (initial_documents[i]) {
             if (strstr(initial_documents[i], "model:")) {
                 ASSERT_NOT_NULL(strstr(installed, "model: local\n"));
@@ -1386,7 +1386,7 @@ TEST(config_yaml_edit_nested_sequence_preserves_crlf) {
     for (const char *newline = strchr(after, '\n'); newline; newline = strchr(newline + 1U, '\n')) {
         ASSERT(newline > after && newline[-1] == '\r');
     }
-    ASSERT_NOT_NULL(strstr(after, "    - id: \"memora-mcp\"\r\n"));
+    ASSERT_NOT_NULL(strstr(after, "    - id: \"memora\"\r\n"));
 #ifndef _WIN32
     struct stat after_state;
     ASSERT_EQ(stat(fixture.path, &after_state), 0);
@@ -1403,12 +1403,12 @@ TEST(config_yaml_edit_nested_sequence_foreign_identity_is_preserved) {
     const char *cases[] = {
         "hooks:\n"
         "  pre_llm_call:\n"
-        "    - id: \"memora-mcp\"\n"
+        "    - id: \"memora\"\n"
         "      type: \"command\"\n"
         "      command: \"foreign\"\n",
         "hooks:\n"
         "  pre_llm_call:\n"
-        "    - id: \"memora-mcp\"\n"
+        "    - id: \"memora\"\n"
         "      type: \"command\"\n"
         "      command: \"/opt/Codebase Memory/bin/cbm\"\n"
         "      timeout: 30\n",
@@ -1442,7 +1442,7 @@ TEST(config_yaml_edit_nested_sequence_removes_only_exact_canonical_item) {
                           "  pre_llm_call:\n"
                           "    - id: \"other-hook\"\n"
                           "      command: \"other\"\n"
-                          "    - id: \"memora-mcp\"\n"
+                          "    - id: \"memora\"\n"
                           "      type: \"command\"\n"
                           "      command: \"/opt/Codebase Memory/bin/cbm\"\n"
                           "  post_llm_call:\n"
@@ -1455,7 +1455,7 @@ TEST(config_yaml_edit_nested_sequence_removes_only_exact_canonical_item) {
               CBM_YAML_IDENTITY_EDIT_OK);
     char *removed = yaml_read_alloc(fixture.path);
     ASSERT_NOT_NULL(removed);
-    ASSERT_NULL(strstr(removed, "id: \"memora-mcp\""));
+    ASSERT_NULL(strstr(removed, "id: \"memora\""));
     ASSERT_NOT_NULL(strstr(removed, "    - id: \"other-hook\"\n"));
     ASSERT_NOT_NULL(strstr(removed, "  post_llm_call:\n"));
     ASSERT_EQ(cbm_yaml_remove_mapping_sequence_item(fixture.path, yaml_hook_sequence_path, 2U, "id",
@@ -1479,9 +1479,9 @@ TEST(config_yaml_edit_nested_sequence_ambiguity_fails_byte_identically) {
         "hooks: {pre_llm_call: []}\n",
         "hooks:\n  pre_llm_call: [{id: \"other\", command: \"other\"}]\n",
         "hooks:\n  pre_llm_call:\n    - id: \"unterminated\n",
-        "hooks:\n  pre_llm_call:\n    - id: \"memora-mcp\"\n"
+        "hooks:\n  pre_llm_call:\n    - id: \"memora\"\n"
         "      command: \"one\"\n"
-        "    - id: \"memora-mcp\"\n"
+        "    - id: \"memora\"\n"
         "      command: \"two\"\n",
     };
     for (size_t i = 0U; i < sizeof(cases) / sizeof(cases[0]); i++) {

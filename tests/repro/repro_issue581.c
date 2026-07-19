@@ -5,7 +5,7 @@
 //   https://github.com/TakaraDasein/memora/issues/581
 //
 // OBSERVED BEHAVIOUR:
-//   memora-mcp in stdio MCP server mode grows from ~12 MB working
+//   memora in stdio MCP server mode grows from ~12 MB working
 //   set to 50-107 GB virtual memory over 12-48 hours while the agent issues
 //   repeated queries (search_graph, query_graph, get_architecture, etc.).
 //   The reporter confirmed auto_index=false, so indexing is NOT the growth

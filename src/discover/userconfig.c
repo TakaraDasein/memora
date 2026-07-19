@@ -2,8 +2,8 @@
  * userconfig.c — User-defined extension→language mappings.
  *
  * Reads extra_extensions from:
- *   Global:  $XDG_CONFIG_HOME/memora-mcp/config.json
- *            (falls back to ~/.config/memora-mcp/config.json)
+ *   Global:  $XDG_CONFIG_HOME/memora/config.json
+ *            (falls back to ~/.config/memora/config.json)
  *   Project: {repo_root}/.codebase-memory.json
  *
  * Project config wins over global. Unknown language values warn and are
@@ -299,7 +299,7 @@ cbm_userconfig_t *cbm_userconfig_load(const char *repo_path) {
     const char *cfg_base = cbm_app_config_dir();
     const char *cfg_fallback = cfg_base ? cfg_base : "/tmp";
     char global_path[PATH_BUF_SZ];
-    snprintf(global_path, sizeof(global_path), "%s/memora-mcp/config.json", cfg_fallback);
+    snprintf(global_path, sizeof(global_path), "%s/memora/config.json", cfg_fallback);
 
     if (load_config_file(global_path, &entries, &count) != 0) {
         for (int i = 0; i < count; i++) {

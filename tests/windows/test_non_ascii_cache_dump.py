@@ -20,7 +20,7 @@ Passes on Linux/macOS either way (byte-transparent UTF-8 filesystems).
 Exit code: 0 == invariant holds, 1 == regression, 2 == setup error.
 
 Usage:
-    python test_non_ascii_cache_dump.py <path-to-memora-mcp[.exe]>
+    python test_non_ascii_cache_dump.py <path-to-memora[.exe]>
 """
 import json
 import os

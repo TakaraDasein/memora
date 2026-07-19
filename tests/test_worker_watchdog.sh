@@ -19,7 +19,7 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-BINARY="${ROOT}/build/c/memora-mcp"
+BINARY="${ROOT}/build/c/memora"
 
 case "$(uname -s)" in
   MINGW*|MSYS*|CYGWIN*)

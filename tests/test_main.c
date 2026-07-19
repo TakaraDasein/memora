@@ -334,7 +334,7 @@ int main(int argc, char **argv) {
         }
     }
     if (!g_list_only) {
-        printf("\n  memora-mcp  C test suite\n");
+        printf("\n  memora  C test suite\n");
     }
 
     /* Foundation */

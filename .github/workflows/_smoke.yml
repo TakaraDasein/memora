@@ -103,20 +103,20 @@ jobs:
       - name: Extract binary
         run: |
           SUFFIX=${{ matrix.variant == 'ui' && '-ui' || '' }}
-          tar -xzf memora-mcp${SUFFIX}-${{ matrix.goos }}-${{ matrix.goarch }}.tar.gz
-          chmod +x memora-mcp
+          tar -xzf memora${SUFFIX}-${{ matrix.goos }}-${{ matrix.goarch }}.tar.gz
+          chmod +x memora
 
       - name: Start artifact server
         run: |
           mkdir -p /tmp/smoke-server
-          cp memora-mcp /tmp/smoke-server/
+          cp memora /tmp/smoke-server/
           OS=${{ matrix.goos }}; ARCH=${{ matrix.goarch }}
           SUFFIX=${{ matrix.variant == 'ui' && '-ui' || '' }}
-          tar -czf "/tmp/smoke-server/memora-mcp${SUFFIX}-${OS}-${ARCH}.tar.gz" \
-            -C /tmp/smoke-server memora-mcp
+          tar -czf "/tmp/smoke-server/memora${SUFFIX}-${OS}-${ARCH}.tar.gz" \
+            -C /tmp/smoke-server memora
           if [ -n "$SUFFIX" ]; then
-            cp "/tmp/smoke-server/memora-mcp${SUFFIX}-${OS}-${ARCH}.tar.gz" \
-               "/tmp/smoke-server/memora-mcp-${OS}-${ARCH}.tar.gz"
+            cp "/tmp/smoke-server/memora${SUFFIX}-${OS}-${ARCH}.tar.gz" \
+               "/tmp/smoke-server/memora-${OS}-${ARCH}.tar.gz"
           fi
           # The linux binary self-updates from the fully-static "-portable" asset
           # (build_update_url in src/cli/cli.c appends -portable on linux; _build.yml's
@@ -124,11 +124,11 @@ jobs:
           # too -- otherwise `update` 404s and Phase 14 fails. Mirror the tarball(s) under
           # the -portable name on linux only.
           if [ "$OS" = "linux" ]; then
-            cp "/tmp/smoke-server/memora-mcp${SUFFIX}-${OS}-${ARCH}.tar.gz" \
-               "/tmp/smoke-server/memora-mcp${SUFFIX}-${OS}-${ARCH}-portable.tar.gz"
+            cp "/tmp/smoke-server/memora${SUFFIX}-${OS}-${ARCH}.tar.gz" \
+               "/tmp/smoke-server/memora${SUFFIX}-${OS}-${ARCH}-portable.tar.gz"
             if [ -n "$SUFFIX" ]; then
-              cp "/tmp/smoke-server/memora-mcp${SUFFIX}-${OS}-${ARCH}-portable.tar.gz" \
-                 "/tmp/smoke-server/memora-mcp-${OS}-${ARCH}-portable.tar.gz"
+              cp "/tmp/smoke-server/memora${SUFFIX}-${OS}-${ARCH}-portable.tar.gz" \
+                 "/tmp/smoke-server/memora-${OS}-${ARCH}-portable.tar.gz"
             fi
           fi
           cd /tmp/smoke-server
@@ -136,21 +136,21 @@ jobs:
           python3 -m http.server 18080 -d /tmp/smoke-server &
 
       - name: Smoke test
-        run: scripts/smoke-test.sh ./memora-mcp
+        run: scripts/smoke-test.sh ./memora
         env:
           SMOKE_DOWNLOAD_URL: http://localhost:18080
 
       - name: Security audits
         run: |
-          scripts/security-strings.sh ./memora-mcp
-          scripts/security-install.sh ./memora-mcp
-          scripts/security-network.sh ./memora-mcp
+          scripts/security-strings.sh ./memora
+          scripts/security-install.sh ./memora
+          scripts/security-network.sh ./memora
 
       - name: MCP robustness test (linux-amd64 standard only)
         if: matrix.variant == 'standard' && matrix.goos == 'linux' && matrix.goarch == 'amd64'
         run: |
-          scripts/security-fuzz.sh ./memora-mcp
-          scripts/security-fuzz-random.sh ./memora-mcp 60
+          scripts/security-fuzz.sh ./memora
+          scripts/security-fuzz-random.sh ./memora 60
 
       - name: ClamAV scan (Linux)
         if: startsWith(matrix.os, 'ubuntu')
@@ -164,7 +164,7 @@ jobs:
           grep -q "DatabaseMirror" /etc/clamav/freshclam.conf 2>/dev/null || \
             echo "DatabaseMirror database.clamav.net" | sudo tee -a /etc/clamav/freshclam.conf > /dev/null
           sudo freshclam --quiet
-          clamscan --no-summary ./memora-mcp
+          clamscan --no-summary ./memora
 
       - name: ClamAV scan (macOS)
         if: startsWith(matrix.os, 'macos')
@@ -177,7 +177,7 @@ jobs:
             echo "DatabaseMirror database.clamav.net" >> "$CLAMAV_ETC/freshclam.conf"
           fi
           freshclam --quiet --no-warnings 2>/dev/null || freshclam --quiet 2>/dev/null || echo "WARNING: freshclam update failed"
-          clamscan --no-summary ./memora-mcp
+          clamscan --no-summary ./memora
 
   smoke-windows:
     needs: setup-matrix
@@ -209,20 +209,20 @@ jobs:
         run: |
           SUFFIX=${{ matrix.variant == 'ui' && '-ui' || '' }}
           ARCH=${{ matrix.arch }}
-          unzip -o "memora-mcp${SUFFIX}-windows-${ARCH}.zip"
-          [ -n "$SUFFIX" ] && cp "memora-mcp${SUFFIX}.exe" memora-mcp.exe || true
+          unzip -o "memora${SUFFIX}-windows-${ARCH}.zip"
+          [ -n "$SUFFIX" ] && cp "memora${SUFFIX}.exe" memora.exe || true
 
       - name: Start artifact server
         shell: msys2 {0}
         run: |
           mkdir -p /tmp/smoke-server
-          cp memora-mcp.exe /tmp/smoke-server/
+          cp memora.exe /tmp/smoke-server/
           SUFFIX=${{ matrix.variant == 'ui' && '-ui' || '' }}
           ARCH=${{ matrix.arch }}
           cd /tmp/smoke-server
-          zip -q "memora-mcp${SUFFIX}-windows-${ARCH}.zip" memora-mcp.exe
+          zip -q "memora${SUFFIX}-windows-${ARCH}.zip" memora.exe
           if [ -n "$SUFFIX" ]; then
-            cp "memora-mcp${SUFFIX}-windows-${ARCH}.zip" "memora-mcp-windows-${ARCH}.zip"
+            cp "memora${SUFFIX}-windows-${ARCH}.zip" "memora-windows-${ARCH}.zip"
           fi
           sha256sum *.zip > checksums.txt
           # Pin to explicit IPv4: on windows-11-arm, `localhost` resolves to ::1 (IPv6)
@@ -232,7 +232,7 @@ jobs:
 
       - name: Smoke test
         shell: msys2 {0}
-        run: scripts/smoke-test.sh ./memora-mcp.exe
+        run: scripts/smoke-test.sh ./memora.exe
         env:
           SMOKE_DOWNLOAD_URL: http://127.0.0.1:18080
           SMOKE_ARCH: ${{ matrix.arch }}
@@ -240,14 +240,14 @@ jobs:
       - name: Security audits
         shell: msys2 {0}
         run: |
-          scripts/security-strings.sh ./memora-mcp.exe
-          scripts/security-install.sh ./memora-mcp.exe
+          scripts/security-strings.sh ./memora.exe
+          scripts/security-install.sh ./memora.exe
 
       - name: Windows Defender scan
         shell: pwsh
         run: |
           & "C:\Program Files\Windows Defender\MpCmdRun.exe" -SignatureUpdate 2>$null
-          $result = & "C:\Program Files\Windows Defender\MpCmdRun.exe" -Scan -ScanType 3 -File "$PWD\memora-mcp.exe" -DisableRemediation
+          $result = & "C:\Program Files\Windows Defender\MpCmdRun.exe" -Scan -ScanType 3 -File "$PWD\memora.exe" -DisableRemediation
           $code = $LASTEXITCODE
           Write-Host $result
           # MpCmdRun -Scan exit codes: 0 = clean, 2 = threat found. Any OTHER non-zero
@@ -280,22 +280,22 @@ jobs:
       - name: Extract and smoke test
         run: |
           SUFFIX=${{ matrix.variant == 'ui' && '-ui' || '' }}
-          tar -xzf memora-mcp${SUFFIX}-linux-${{ matrix.arch }}-portable.tar.gz
-          chmod +x memora-mcp
-          scripts/smoke-test.sh ./memora-mcp
+          tar -xzf memora${SUFFIX}-linux-${{ matrix.arch }}-portable.tar.gz
+          chmod +x memora
+          scripts/smoke-test.sh ./memora
 
       # The -portable binary is what all linux install/update paths now deliver;
       # it MUST start on old glibc (Debian 11 / RHEL 8 / Ubuntu 20.04). Runs it
       # in debian:bullseye (glibc 2.31) — the standard dynamic binary would fail
       # here with `GLIBC_2.38 not found`.
       - name: Old-glibc compatibility
-        run: scripts/ci/check-glibc-compat.sh ./memora-mcp
+        run: scripts/ci/check-glibc-compat.sh ./memora
 
       - name: Security audits
         run: |
-          scripts/security-strings.sh ./memora-mcp
-          scripts/security-install.sh ./memora-mcp
-          scripts/security-network.sh ./memora-mcp
+          scripts/security-strings.sh ./memora
+          scripts/security-install.sh ./memora
+          scripts/security-network.sh ./memora
 
   # ── Packaging check (non-gating) ──────────────────────────────────
   # Builds pkg/glama/Dockerfile — the image Glama builds to score the
@@ -322,7 +322,7 @@ jobs:
           HOMEBREW_NO_AUTO_UPDATE: 1
         run: |
           eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-          brew tap takaradasein/memora "$GITHUB_WORKSPACE"
-          brew trust takaradasein/memora
-          brew install memora-mcp
-          memora-mcp --version
+          brew tap deusdata/memora "$GITHUB_WORKSPACE"
+          brew trust deusdata/memora
+          brew install memora
+          memora --version

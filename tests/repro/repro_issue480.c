@@ -4,7 +4,7 @@
  * Issue: #480 — "trace_path returns empty for all functions despite
  *               traversable CALLS edges (v0.8.1, macOS arm64)"
  *
- * Root cause (identified by maintainer DeusData + reporter halindrome):
+ * Root cause (identified by maintainer TakaraDasein + reporter halindrome):
  *   handle_trace_call_path() calls cbm_store_find_nodes_by_name() to locate
  *   the start node for BFS.  On the affected build, the name-to-node lookup
  *   returns node_count == 0 for EVERY function name — even names that the

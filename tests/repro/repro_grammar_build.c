@@ -814,7 +814,7 @@ TEST(repro_grammar_build_requirements) {
         "ruff==0.1.6\n"
         "\n"
         "# URL requirement\n"
-        "cbm-client @ git+https://github.com/DeusData/cbm-client.git@v0.8.1\n";
+        "cbm-client @ git+https://github.com/TakaraDasein/cbm-client.git@v0.8.1\n";
     static const char bad[] = "requests==2.31.0\nbroken>=";
     if (build_base_battery("Requirements", src, CBM_LANG_REQUIREMENTS,
                            "requirements.txt") != 0)
