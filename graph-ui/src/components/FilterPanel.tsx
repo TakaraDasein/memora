@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Eye, EyeOff } from "lucide-react";
 import { colorForLabel, STATUS_LEGEND } from "../lib/colors";
 import type { GraphData } from "../lib/types";
 
@@ -212,11 +213,13 @@ export function FilterPanel({
         title="No indexados"
         count={missedCount > 0 ? `${missedCount.toLocaleString()} archivos` : undefined}
       >
-        <CheckRow
-          checked={missedView}
-          onToggle={onToggleMissedView}
-          label="Mostrar no indexados"
-        />
+        <button
+          onClick={onToggleMissedView}
+          className="inline-flex items-center gap-1.5 text-[11px] font-medium transition-all text-muted-foreground"
+        >
+          {missedView ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5 text-foreground/40" />}
+          No indexados
+        </button>
         <p className="text-[9px] leading-snug text-muted-foreground/60">
           {missedCount > 0
             ? "Satélite blanco = archivos no indexados completamente (mejor esfuerzo). Haz clic para enfocar, clic en la galaxia para volver."

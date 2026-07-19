@@ -84,7 +84,7 @@ echo "  ui=$WITH_UI version=${VERSION:-dev}"
 # Verify compiler supports target arch
 verify_compiler "$CC"
 
-# Step 1: Clean C build artifacts only (not node_modules — npm ci handles that)
+# Step 1: Clean C build artifacts only (not node_modules — pnpm install handles that)
 rm -rf "$ROOT/build/c"
 
 # Step 2: Build (Makefile applies $ARCHFLAGS for the target arch on macOS)

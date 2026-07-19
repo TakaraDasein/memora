@@ -111,7 +111,7 @@ export function GraphTab({ project }: GraphTabProps) {
    * not fully cover, shown as a white satellite cluster beside the code
    * galaxy. Toggle only hides/shows it — the data rides along with every
    * code-graph layout. */
-  const [showMissedSkeleton, setShowMissedSkeleton] = useState(true);
+  const [showMissedSkeleton, setShowMissedSkeleton] = useState(false);
 
   /* Dead-code view: recolor by status + status-based filters */
   const [deadCodeView, setDeadCodeView] = useState(false);

@@ -42,7 +42,7 @@ mkdir -p "$(dirname "$OUT")"
         cat "$f"
     done
 
-    # With-ui packaging path: node_modules exists (make frontend ran npm ci),
+    # With-ui packaging path: node_modules exists (make frontend ran pnpm install),
     # so append the license texts of the npm packages compiled into the UI
     # bundle. Standard binaries carry no bundle — the section is skipped.
     if [ -d "$ROOT/graph-ui/node_modules" ]; then
